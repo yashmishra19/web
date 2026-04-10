@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { ToastProvider } from '@/components/ui';
+import { AppLayout } from '@/components/layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 import LoginPage      from '@/pages/LoginPage';
@@ -17,32 +19,36 @@ import NotFoundPage   from '@/pages/NotFoundPage';
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login"  element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+      <ToastProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login"  element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
 
-            {/* Protected routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/dashboard"  element={<DashboardPage />} />
-              <Route path="/checkin"    element={<CheckInPage />} />
-              <Route path="/journal"    element={<JournalPage />} />
-              <Route path="/breathing"  element={<BreathingPage />} />
-              <Route path="/analytics"  element={<AnalyticsPage />} />
-              <Route path="/settings"   element={<SettingsPage />} />
-            </Route>
+              {/* Protected routes — wrapped in AppLayout shell */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<AppLayout />}>
+                  <Route path="/onboarding" element={<OnboardingPage />} />
+                  <Route path="/dashboard"  element={<DashboardPage />} />
+                  <Route path="/checkin"    element={<CheckInPage />} />
+                  <Route path="/journal"    element={<JournalPage />} />
+                  <Route path="/breathing"  element={<BreathingPage />} />
+                  <Route path="/analytics"  element={<AnalyticsPage />} />
+                  <Route path="/settings"   element={<SettingsPage />} />
+                </Route>
+              </Route>
 
-            {/* Redirects */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              {/* Redirects */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-            {/* 404 */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+              {/* 404 */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

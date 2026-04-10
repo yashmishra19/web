@@ -1,0 +1,10 @@
+export default function JournalPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 page-enter">
+      <div className="card w-full max-w-sm text-center">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Journal</h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Coming in Phase 10</p>
+      </div>
+    </div>
+  );
+}

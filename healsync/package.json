@@ -1,0 +1,17 @@
+{
+  "name": "healsync",
+  "version": "1.0.0",
+  "description": "Personalized health recommendations + continuous mental wellbeing support",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"green,cyan\" \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "cd client && npm run build",
+    "seed": "cd server && npm run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

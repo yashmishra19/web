@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* -------------------------------------------------------------------------
+   * Cards
+   * ---------------------------------------------------------------------- */
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-gray-100 p-5
+           dark:bg-gray-900 dark:border-gray-800;
+  }
+
+  .card-hover {
+    @apply card transition-shadow hover:shadow-card-hover cursor-pointer;
+  }
+
+  /* -------------------------------------------------------------------------
+   * Buttons
+   * ---------------------------------------------------------------------- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-mint-600 text-white font-medium rounded-xl px-4 py-2
+           hover:bg-mint-700 active:scale-[0.98]
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-mint-50 text-mint-700 font-medium rounded-xl px-4 py-2
+           hover:bg-mint-100 active:scale-[0.98]
+           transition-all duration-150
+           dark:bg-mint-900/20 dark:text-mint-400 dark:hover:bg-mint-900/30
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-gray-600 font-medium rounded-xl px-4 py-2
+           hover:bg-gray-100 active:scale-[0.98]
+           transition-all duration-150
+           dark:text-gray-400 dark:hover:bg-gray-800
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2
+           bg-red-600 text-white font-medium rounded-xl px-4 py-2
+           hover:bg-red-700 active:scale-[0.98]
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  /* -------------------------------------------------------------------------
+   * Inputs
+   * ---------------------------------------------------------------------- */
+  .input {
+    @apply w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm
+           placeholder:text-gray-400
+           focus:outline-none focus:ring-2 focus:ring-mint-500 focus:border-transparent
+           transition-shadow
+           dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100
+           dark:placeholder:text-gray-500 dark:focus:ring-mint-500;
+  }
+
+  .input-error {
+    @apply input border-red-400 focus:ring-red-400;
+  }
+
+  /* -------------------------------------------------------------------------
+   * Badges
+   * ---------------------------------------------------------------------- */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-green  { @apply badge bg-mint-100 text-mint-700 dark:bg-mint-900/30 dark:text-mint-400; }
+  .badge-blue   { @apply badge bg-calm-100 text-calm-700 dark:bg-calm-900/30 dark:text-calm-400; }
+  .badge-amber  { @apply badge bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400; }
+  .badge-red    { @apply badge bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400; }
+  .badge-gray   { @apply badge bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300; }
+  .badge-purple { @apply badge bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Custom scrollbar
+ * ------------------------------------------------------------------------ */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #d1d5db; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ---------------------------------------------------------------------------
+ * Page-enter animation
+ * ------------------------------------------------------------------------ */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeSlideIn 0.2s ease-out both;
+}

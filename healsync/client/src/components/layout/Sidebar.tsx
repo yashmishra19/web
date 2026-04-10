@@ -6,6 +6,7 @@ import {
   Wind,
   BarChart2,
   Settings,
+  MessageSquare,
   Flame,
   LogOut,
 } from 'lucide-react';
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
   { label: 'Journal',    icon: BookOpen,        href: '/journal'   },
   { label: 'Breathing',  icon: Wind,            href: '/breathing' },
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
+  { label: 'AI Chat',    icon: MessageSquare,   href: '/chat'      },
   { label: 'Settings',   icon: Settings,        href: '/settings'  },
 ];
 

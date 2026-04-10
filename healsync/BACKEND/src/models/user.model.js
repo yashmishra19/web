@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  keyPoints: {
+    type: [String],
+    default: []
+  }
 });
 
 const userModel = mongoose.model("users", userSchema);

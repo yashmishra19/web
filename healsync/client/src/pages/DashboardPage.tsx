@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useDashboard } from '../hooks/useDashboard';
 import { useStreak } from '../hooks/useStreak';
 import StreakWidget from '../components/StreakWidget';
+import ReminderCards from '../components/ReminderCards';
 import { MOCK_USER } from '../mock/data';
 import {
   Flame,
@@ -130,7 +131,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 page-enter pb-10">
       {/* SECTION 1 — Welcome Header */}
-      <div className="bg-gradient-to-r from-mint-500 to-mint-600 dark:from-mint-700 dark:to-mint-800 rounded-2xl p-5 text-white flex items-center justify-between">
+      <div className="bg-gradient-to-r from-mint-500 to-mint-600 dark:from-mint-700 dark:to-mint-800 rounded-2xl p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-medium">
             Good {timeOfDay}, {user?.name} 👋
@@ -155,6 +156,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <ReminderCards />
+      
       <StreakWidget />
 
       {/* SECTION 2 — Wellness Score + Stats Row */}

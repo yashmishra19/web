@@ -169,7 +169,7 @@ export default function SelfCarePage() {
                 <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{res.name}</div>
                 <div className="text-xs text-gray-400 mb-1">{res.desc}</div>
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="text-sm font-medium text-mint-600 dark:text-mint-400">{res.contact}</div>
+                  <a href={`tel:${res.contact}`} className="text-sm font-medium text-mint-600 dark:text-mint-400 hover:text-mint-700">{res.contact}</a>
                   <Badge color="gray" className="text-[10px]">{res.available}</Badge>
                 </div>
               </div>

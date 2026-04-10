@@ -158,7 +158,7 @@ you like to talk about today?`,
   };
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto page-enter pb-10 mt-6 px-1">
+    <div className="flex flex-col h-full max-w-2xl mx-auto page-enter pb-10 mt-6 px-1 safe-bottom" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <PageHeader
         title="AI Wellness Assistant"
         subtitle="Powered by HealSync AI · Beta"
@@ -176,7 +176,7 @@ you like to talk about today?`,
         </div>
       </div>
 
-      <div className="card flex flex-col p-0 overflow-hidden h-[500px] md:h-[560px]">
+      <div className="card flex flex-col p-0 overflow-hidden h-[400px] md:h-[560px]">
         <div className="flex items-center gap-3 p-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-mint-50 to-calm-50 dark:from-mint-900/10 dark:to-calm-900/10">
           <div className="w-9 h-9 rounded-xl bg-mint-500 flex items-center justify-center shrink-0">
             <Bot size={18} className="text-white" />

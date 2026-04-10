@@ -128,10 +128,10 @@ export default function MoodHistoryPage() {
         
         <div className="grid grid-cols-7 gap-1">
           {days.map((d, i) => {
-             if (!d) return <div key={i} className="w-full aspect-square" />;
+             if (!d) return <div key={i} className="w-full aspect-square min-h-[32px]" />;
              const dStr = d.toDateString();
              const cItem = checkinsByDate[dStr];
-             let cellClass = "w-full aspect-square rounded-lg flex items-center justify-center text-xs cursor-default relative ";
+             let cellClass = "w-full aspect-square min-h-[32px] rounded-lg flex items-center justify-center text-xs cursor-default relative ";
              
              if (!cItem) {
                 cellClass += "bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600";

@@ -94,7 +94,7 @@ export default function AnalyticsPage() {
         subtitle="Track your health and wellbeing trends over time"
       />
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-1">
         {ranges.map(r => (
           <button
             key={r.value}

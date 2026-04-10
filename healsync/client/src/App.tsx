@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui';
@@ -18,6 +18,7 @@ import ChatbotPage    from '@/pages/ChatbotPage';
 import NotFoundPage   from '@/pages/NotFoundPage';
 import MoodHistoryPage from '@/pages/MoodHistoryPage';
 import SelfCarePage   from '@/pages/SelfCarePage';
+import LandingPage    from '@/pages/LandingPage';
 
 export default function App() {
   return (
@@ -47,7 +48,7 @@ export default function App() {
               </Route>
 
               {/* Redirects */}
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<LandingPage />} />
 
               {/* 404 */}
               <Route path="*" element={<NotFoundPage />} />

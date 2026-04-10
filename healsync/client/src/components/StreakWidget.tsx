@@ -56,13 +56,13 @@ export default function StreakWidget({ compact = false }: StreakWidgetProps) {
 
       <div>
         <div className="text-xs text-gray-400 mb-2">This week</div>
-        <div className="flex justify-between">
+        <div className="flex justify-between w-full">
           {streakData.weeklyCheckIns.map((checked, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${checked ? 'bg-orange-400 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600'}`}>
-                {checked ? <Flame size={14} /> : <span className="text-xs">{days[i]}</span>}
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${checked ? 'bg-orange-400 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600'}`}>
+                {checked ? <Flame size={12} className="sm:w-3.5 sm:h-3.5" /> : <span className="text-[10px] sm:text-xs">{days[i]}</span>}
               </div>
-              <div className="text-xs text-gray-400">{days[i]}</div>
+              <div className="text-[10px] sm:text-xs text-gray-400">{days[i]}</div>
             </div>
           ))}
         </div>

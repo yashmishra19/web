@@ -27,8 +27,8 @@ export const MOCK_USER: PublicUser = {
   email:                  'demo@healsync.app',
   name:                   'Alex Johnson',
   hasCompletedOnboarding: true,
-  streakCount:            7,
-  createdAt:              generateDateString(7),
+  streakCount:            9,
+  createdAt:              generateDateString(30),
 };
 
 // ---------------------------------------------------------------------------
@@ -51,29 +51,55 @@ export const MOCK_PROFILE: UserProfile = {
   workStudyHours:     9,
   mainGoal:           'reduce_stress',
   existingConditions: [],
-  createdAt:          generateDateString(7),
+  createdAt:          generateDateString(30),
   updatedAt:          generateDateString(0),
 };
 
 // ---------------------------------------------------------------------------
-// Check-ins (14 days, index 0 = today)
+// Check-ins (30 days, index 0 = today, index 29 = 29 days ago)
 // ---------------------------------------------------------------------------
 
+// We generate 30 days of check-ins.
+// Days 30-20 ago (index 29 to 19): lower mood, high stress
+// Days 19-10 ago (index 18 to 9): moderate
+// Days 9-1 ago (index 8 to 0): improving
+
 const rawCheckins = [
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.8, steps: 20, energy: 3, score: 62, notes: ''   },
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 15, energy: 2, score: 52, notes: ''   },
-  { mood: 4, sleep: 7.5, stress: 2, water: 2.2, steps: 35, energy: 4, score: 75, notes: 'Felt a bit tired but managed to go for a short walk.'   },
-  { mood: 3, sleep: 6.5, stress: 3, water: 2.0, steps: 25, energy: 3, score: 64, notes: ''   },
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 10, energy: 2, score: 50, notes: ''   },
-  { mood: 4, sleep: 7.0, stress: 2, water: 2.4, steps: 40, energy: 4, score: 76, notes: 'Had a stressful day at work, tried some deep breathing.' },
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.9, steps: 20, energy: 3, score: 61, notes: ''   },
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.7, steps: 15, energy: 2, score: 53, notes: ''   },
-  { mood: 4, sleep: 8.0, stress: 2, water: 2.3, steps: 45, energy: 4, score: 78, notes: 'Great day overall, energy levels were high.' },
-  { mood: 3, sleep: 6.5, stress: 3, water: 2.0, steps: 30, energy: 3, score: 65, notes: ''   },
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 10, energy: 2, score: 51, notes: ''   },
-  { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 35, energy: 4, score: 77, notes: ''   },
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.8, steps: 20, energy: 3, score: 63, notes: ''   },
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 15, energy: 2, score: 55, notes: ''   },
+  // Day 0 to 9 ago (Improving)
+  { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 40, energy: 4, score: 78, notes: 'Feeling great and energized today.' }, // Day 0 (today)
+  { mood: 4, sleep: 8.0, stress: 2, water: 2.2, steps: 35, energy: 4, score: 76, notes: 'Good day overall.' }, // Day 1
+  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 30, energy: 3, score: 72, notes: '' }, // Day 2
+  { mood: 4, sleep: 7.5, stress: 2, water: 2.4, steps: 35, energy: 4, score: 77, notes: 'Had a productive morning.' }, // Day 3
+  { mood: 3, sleep: 7.0, stress: 3, water: 2.1, steps: 25, energy: 3, score: 70, notes: '' }, // Day 4
+  { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 45, energy: 4, score: 79, notes: 'Went for a long walk.' }, // Day 5
+  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 30, energy: 3, score: 71, notes: '' }, // Day 6
+  { mood: 3, sleep: 7.5, stress: 2, water: 2.3, steps: 25, energy: 3, score: 74, notes: '' }, // Day 7
+  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 20, energy: 3, score: 69, notes: '' }, // Day 8
+
+  // Day 10 to 19 ago (Moderate)
+  { mood: 3, sleep: 6.5, stress: 3, water: 1.8, steps: 20, energy: 3, score: 65, notes: '' }, // Day 9
+  { mood: 3, sleep: 6.0, stress: 3, water: 1.9, steps: 25, energy: 3, score: 64, notes: '' }, // Day 10
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 15, energy: 2, score: 55, notes: 'Tough day' }, // Day 11
+  { mood: 3, sleep: 6.5, stress: 3, water: 2.0, steps: 20, energy: 3, score: 66, notes: '' }, // Day 12
+  { mood: 3, sleep: 7.0, stress: 3, water: 1.8, steps: 25, energy: 3, score: 67, notes: '' }, // Day 13
+  { mood: 2, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 2, score: 56, notes: '' }, // Day 14
+  { mood: 3, sleep: 6.5, stress: 3, water: 1.9, steps: 20, energy: 3, score: 65, notes: '' }, // Day 15
+  { mood: 3, sleep: 6.0, stress: 3, water: 1.8, steps: 25, energy: 3, score: 64, notes: '' }, // Day 16
+  { mood: 3, sleep: 6.5, stress: 3, water: 1.7, steps: 20, energy: 3, score: 63, notes: '' }, // Day 17
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 15, energy: 2, score: 54, notes: '' }, // Day 18
+
+  // Day 20 to 30 ago (Lower mood, high stress)
+  { mood: 2, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 2, score: 53, notes: '' }, // Day 19
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 10, energy: 2, score: 50, notes: 'Feeling overwhelmed.' }, // Day 20
+  { mood: 3, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 3, score: 52, notes: '' }, // Day 21
+  { mood: 2, sleep: 5.0, stress: 5, water: 1.4, steps: 10, energy: 2, score: 45, notes: 'Very stressed' }, // Day 22
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 15, energy: 2, score: 51, notes: '' }, // Day 23
+  { mood: 2, sleep: 5.0, stress: 4, water: 1.6, steps: 10, energy: 1, score: 48, notes: '' }, // Day 24
+  { mood: 3, sleep: 6.0, stress: 3, water: 1.7, steps: 15, energy: 3, score: 55, notes: '' }, // Day 25
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 10, energy: 2, score: 49, notes: '' }, // Day 26
+  { mood: 2, sleep: 5.0, stress: 5, water: 1.4, steps: 10, energy: 1, score: 44, notes: 'Could not sleep well.' }, // Day 27
+  { mood: 3, sleep: 6.0, stress: 4, water: 1.6, steps: 15, energy: 3, score: 53, notes: '' }, // Day 28
+  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 10, energy: 2, score: 47, notes: '' }  // Day 29
 ];
 
 export const MOCK_CHECKINS: CheckIn[] = rawCheckins.map((c, i) => ({
@@ -154,7 +180,7 @@ export const MOCK_RECOMMENDATIONS: Recommendation[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Journal entries (5 days, index 0 = today)
+// Journal entries (8 days, index 0 = today)
 // ---------------------------------------------------------------------------
 
 const journalData = [
@@ -178,6 +204,18 @@ const journalData = [
     content: 'Work stress is building up. Need to find better ways to decompress in the evenings. Maybe try the breathing exercises more consistently.',
     moodTag: '3',
   },
+  {
+    content: 'Started reading a new book. It really helped to distract me from the usual worries.',
+    moodTag: '3',
+  },
+  {
+    content: 'Feeling quite anxious today, finding it hard to pinpoint why. Just need to take it one step at a time.',
+    moodTag: '2',
+  },
+  {
+    content: 'Had a great conversation with a friend today. Amazing how a simple catch-up can lift your spirits!',
+    moodTag: '5',
+  }
 ];
 
 export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = journalData.map((j, i) => ({
@@ -195,20 +233,20 @@ export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = journalData.map((j, i) => ({
 // ---------------------------------------------------------------------------
 
 export const MOCK_DASHBOARD: DashboardSummary = {
-  wellnessScore:     67,
-  wellnessStatus:    'needs_attention',
-  todayMood:         3,
-  streakCount:       7,
-  sleepLast7Days:    [6, 7.5, 5.5, 6, 7, 6.5, 5],
-  waterToday:        1.8,
-  stressToday:       3,
-  activityToday:     20,
+  wellnessScore:     72,
+  wellnessStatus:    'improving',
+  todayMood:         4,
+  streakCount:       9,
+  sleepLast7Days:    [6.0, 7.5, 7.0, 7.5, 7.0, 8.0, 7.5], // Days 6 to 0
+  waterToday:        2.5,
+  stressToday:       2,
+  activityToday:     40,
   recommendations:   MOCK_RECOMMENDATIONS.slice(0, 3),
   hasCheckedInToday: false,
 };
 
 // ---------------------------------------------------------------------------
-// Analytics (14 days, index 0 = oldest)
+// Analytics (30 days, index 0 = oldest)
 // ---------------------------------------------------------------------------
 
 // Reverse of check-ins so oldest data is first (chart left-to-right order)
@@ -216,19 +254,19 @@ const reversed = [...rawCheckins].reverse();
 
 export const MOCK_ANALYTICS: AnalyticsData = {
   mood: reversed.map((c, i) => ({
-    date:  generateDateString(13 - i),
+    date:  generateDateString(29 - i),
     value: c.mood,
   })),
   sleep: reversed.map((c, i) => ({
-    date:  generateDateString(13 - i),
+    date:  generateDateString(29 - i),
     value: c.sleep,
   })),
   stress: reversed.map((c, i) => ({
-    date:  generateDateString(13 - i),
+    date:  generateDateString(29 - i),
     value: c.stress,
   })),
   wellness: reversed.map((c, i) => ({
-    date:  generateDateString(13 - i),
+    date:  generateDateString(29 - i),
     value: c.score,
   })),
 };

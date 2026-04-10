@@ -11,7 +11,7 @@ export default function ProtectedRoute() {
   }
 
   if (!token || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!user.hasCompletedOnboarding && location.pathname !== '/onboarding') {

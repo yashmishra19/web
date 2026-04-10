@@ -244,7 +244,7 @@ export default function BreathingPage() {
           )}
 
           <Card className="text-center py-8 md:py-12">
-            <div className="relative mx-auto w-48 h-48 md:w-56 md:h-56">
+            <div className="relative mx-auto w-[80%] max-w-[280px] aspect-square md:w-56 md:h-56">
               {/* Ring 1 (outermost pulse — only when isRunning) */}
               {(isRunning && currentPhase.label === 'Inhale') && (
                 <div

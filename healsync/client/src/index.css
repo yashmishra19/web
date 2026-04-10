@@ -120,3 +120,20 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 .slide-up { animation: slideUp 0.2s ease-out; }
+
+/* ---------------------------------------------------------------------------
+ * Typing indicator
+ * ------------------------------------------------------------------------ */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-6px); }
+}
+.typing-dot-1 { animation: typingBounce 1s infinite; }
+.typing-dot-2 { animation: typingBounce 1s infinite 0.15s; }
+.typing-dot-3 { animation: typingBounce 1s infinite 0.3s; }
+
+/* Backdrop blur support */
+.backdrop-blur-md { backdrop-filter: blur(12px); }
+
+/* Safe area for mobile keyboards */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }

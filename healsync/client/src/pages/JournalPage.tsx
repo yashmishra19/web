@@ -296,7 +296,7 @@ export default function JournalPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-wrap break-words">
                       {contentPreview}
                     </div>
                     {entry.content.length > 150 && (

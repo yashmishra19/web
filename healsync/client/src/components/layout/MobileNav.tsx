@@ -2,8 +2,8 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   ClipboardCheck,
-  BookOpen,
-  BarChart2,
+  Smile,
+  Heart,
   Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -18,8 +18,8 @@ interface MobileNavItem {
 const navItems: MobileNavItem[] = [
   { label: 'Home',      icon: LayoutDashboard, href: '/dashboard' },
   { label: 'Check-In',  icon: ClipboardCheck,  href: '/checkin'   },
-  { label: 'Journal',   icon: BookOpen,        href: '/journal'   },
-  { label: 'Analytics', icon: BarChart2,       href: '/analytics' },
+  { label: 'Mood',      icon: Smile,           href: '/mood-history' },
+  { label: 'Self-Care', icon: Heart,           href: '/self-care' },
   { label: 'Settings',  icon: Settings,        href: '/settings'  },
 ];
 

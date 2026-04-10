@@ -16,7 +16,8 @@ import {
   Target,
   ClipboardCheck,
   BookOpen,
-  BarChart2
+  BarChart2,
+  AlertCircle
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -33,7 +34,7 @@ import {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const { data, isLoading } = useDashboard();
+  const { data, isLoading, error } = useDashboard();
 
   const user = authUser || MOCK_USER;
 
@@ -110,6 +111,17 @@ export default function DashboardPage() {
     if (label.includes('water')) return '/settings';
     return '/checkin';
   };
+
+  if (error) {
+    return (
+      <div className="card mt-12 max-w-sm mx-auto border-red-100 bg-red-50 dark:bg-red-900/20 text-center py-8">
+        <AlertCircle size={32} className="text-red-400 mx-auto mb-3" />
+        <div className="text-sm font-medium text-red-700">Something went wrong</div>
+        <div className="text-xs text-red-500 mb-4">{error}</div>
+        <button className="btn-secondary" onClick={() => window.location.reload()}>Try again</button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 page-enter pb-10">

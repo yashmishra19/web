@@ -6,10 +6,10 @@ import {
   ReferenceLine, Cell
 } from 'recharts';
 import {
-  PageHeader, SkeletonCard, StatCard
+  PageHeader, SkeletonCard, StatCard, EmptyState, Button
 } from '../components/ui';
 import {
-  Moon, Smile, Zap, Heart
+  Moon, Smile, Zap, Heart, AlertCircle
 } from 'lucide-react';
 import type { TimeSeriesPoint } from '../../../shared/types';
 
@@ -32,7 +32,7 @@ function getTrend(points: TimeSeriesPoint[]): 'up' | 'down' | 'neutral' {
 
 export default function AnalyticsPage() {
   const [range, setRange] = useState<Range>('14d');
-  const { data, isLoading } = useAnalytics(range);
+  const { data, isLoading, error } = useAnalytics(range);
 
   const ranges: { value: Range; label: string }[] = [
     { value: '7d', label: '7 days' },
@@ -65,6 +65,26 @@ export default function AnalyticsPage() {
     else stressTrend = 'neutral';
 
     wellnessTrend = getTrend(data.wellness);
+  }
+
+  if (error) {
+    return (
+      <div className="card mt-12 max-w-sm mx-auto border-red-100 bg-red-50 dark:bg-red-900/20 text-center py-8">
+        <AlertCircle size={32} className="text-red-400 mx-auto mb-3" />
+        <div className="text-sm font-medium text-red-700">Something went wrong</div>
+        <div className="text-xs text-red-500 mb-4">{error.message || 'Unknown error'}</div>
+        <Button variant="secondary" onClick={() => window.location.reload()}>Try again</Button>
+      </div>
+    );
+  }
+
+  if (!isLoading && !data) {
+    return (
+      <div className="space-y-6 page-enter pb-10 mt-6 max-w-4xl mx-auto">
+        <PageHeader title="Analytics" subtitle="Track your health and wellbeing trends over time" />
+        <EmptyState title="No analytics data" description="Start logging check-ins to see your trends over time." />
+      </div>
+    );
   }
 
   return (

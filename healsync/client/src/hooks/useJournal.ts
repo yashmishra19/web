@@ -7,6 +7,7 @@ const JOURNAL_KEY = 'healsync_journal'
 export function useJournal() {
   const [entries, setEntries] = useState<JournalEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const loadEntries = useCallback(() => {
     try {
@@ -17,7 +18,8 @@ export function useJournal() {
         localStorage.setItem(JOURNAL_KEY, JSON.stringify(MOCK_JOURNAL_ENTRIES))
         setEntries(MOCK_JOURNAL_ENTRIES)
       }
-    } catch {
+    } catch (e: any) {
+      setError(e.message || 'Failed to load journal entries');
       setEntries(MOCK_JOURNAL_ENTRIES)
     } finally {
       setIsLoading(false)
@@ -61,5 +63,5 @@ export function useJournal() {
     localStorage.setItem(JOURNAL_KEY, JSON.stringify(updated))
   }
 
-  return { entries, isLoading, addEntry, deleteEntry, updateEntry }
+  return { entries, isLoading, error, addEntry, deleteEntry, updateEntry }
 }

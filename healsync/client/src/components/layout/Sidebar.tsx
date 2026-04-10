@@ -9,6 +9,8 @@ import {
   MessageSquare,
   Flame,
   LogOut,
+  Calendar,
+  Heart,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -30,6 +32,8 @@ const navItems: NavItem[] = [
   { label: 'Journal',    icon: BookOpen,        href: '/journal'   },
   { label: 'Breathing',  icon: Wind,            href: '/breathing' },
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
+  { label: 'Mood History', icon: Calendar,  href: '/mood-history' },
+  { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
   { label: 'AI Chat',    icon: MessageSquare,   href: '/chat'      },
   { label: 'Settings',   icon: Settings,        href: '/settings'  },
 ];

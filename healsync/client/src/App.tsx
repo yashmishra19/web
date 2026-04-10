@@ -16,6 +16,8 @@ import AnalyticsPage  from '@/pages/AnalyticsPage';
 import SettingsPage   from '@/pages/SettingsPage';
 import ChatPage       from '@/pages/ChatPage';
 import NotFoundPage   from '@/pages/NotFoundPage';
+import MoodHistoryPage from '@/pages/MoodHistoryPage';
+import SelfCarePage   from '@/pages/SelfCarePage';
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
                   <Route path="/analytics"  element={<AnalyticsPage />} />
                   <Route path="/chat"       element={<ChatPage />} />
                   <Route path="/settings"   element={<SettingsPage />} />
+                  <Route path="/mood-history" element={<MoodHistoryPage />} />
+                  <Route path="/self-care"    element={<SelfCarePage />} />
                 </Route>
               </Route>
 

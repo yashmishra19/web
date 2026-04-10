@@ -5,11 +5,11 @@ import {
   PageHeader, Button, Textarea, MoodPicker, EmptyState, SkeletonCard
 } from '../components/ui';
 import {
-  Plus, Trash2, Edit3, BookOpen, ChevronDown, ChevronUp, X, Save, Search
+  Plus, Trash2, Edit3, BookOpen, ChevronDown, ChevronUp, X, Save, Search, AlertCircle
 } from 'lucide-react';
 
 export default function JournalPage() {
-  const { entries, isLoading, addEntry, deleteEntry, updateEntry } = useJournal();
+  const { entries, isLoading, error, addEntry, deleteEntry, updateEntry } = useJournal();
   const { showToast } = useToastContext();
 
   const [isWriting, setIsWriting] = useState(false);
@@ -75,6 +75,17 @@ export default function JournalPage() {
     }
   });
   const maxCount = Math.max(...Object.values(moodCounts), 1);
+
+  if (error) {
+    return (
+      <div className="card mt-12 max-w-sm mx-auto border-red-100 bg-red-50 dark:bg-red-900/20 text-center py-8">
+        <AlertCircle size={32} className="text-red-400 mx-auto mb-3" />
+        <div className="text-sm font-medium text-red-700">Something went wrong</div>
+        <div className="text-xs text-red-500 mb-4">{error}</div>
+        <Button variant="secondary" onClick={() => window.location.reload()}>Try again</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 page-enter max-w-2xl mx-auto pb-10 mt-6 px-1">

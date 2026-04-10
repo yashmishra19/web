@@ -7,6 +7,7 @@ type Range = '7d' | '14d' | '30d'
 export function useAnalytics(range: Range = '14d') {
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     setIsLoading(true)
@@ -26,7 +27,8 @@ export function useAnalytics(range: Range = '14d') {
 
         setData(merged)
         setIsLoading(false)
-      } catch {
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error(String(err)))
         setData(MOCK_ANALYTICS)
         setIsLoading(false)
       }
@@ -35,7 +37,7 @@ export function useAnalytics(range: Range = '14d') {
     return () => clearTimeout(timer)
   }, [range])
 
-  return { data, isLoading }
+  return { data, isLoading, error }
 }
 
 function buildSeries(

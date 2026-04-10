@@ -4,6 +4,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui';
 import { AppLayout } from '@/components/layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { BackendProvider } from './context/BackendContext';
 
 import LoginPage      from '@/pages/LoginPage';
 import SignupPage     from '@/pages/SignupPage';
@@ -23,9 +24,10 @@ import LandingPage    from '@/pages/LandingPage';
 export default function App() {
   return (
     <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
-          <BrowserRouter>
+      <BackendProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <BrowserRouter>
             <Routes>
               {/* Public routes */}
               <Route path="/login"  element={<LoginPage />} />
@@ -56,6 +58,7 @@ export default function App() {
           </BrowserRouter>
         </AuthProvider>
       </ToastProvider>
+      </BackendProvider>
     </ThemeProvider>
   );
 }

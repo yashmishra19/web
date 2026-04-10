@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { authApi } from '../api';
+import { handleApiError } from '../api/apiUtils';
 import { fakeSignup } from '@/mock/auth';
+import { useBackend } from '../context/BackendContext';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import LoadingScreen from '@/components/ui/LoadingScreen';
@@ -16,6 +19,7 @@ interface FieldErrors {
 export default function SignupPage() {
   const { user, isLoading, login } = useAuth();
   const navigate = useNavigate();
+  const { isOnline } = useBackend();
 
   const [name,            setName]            = useState('');
   const [email,           setEmail]           = useState('');
@@ -60,19 +64,27 @@ export default function SignupPage() {
     setServerError('');
     if (!validate()) return;
 
-    setSubmitting(true);
     try {
-      const { token, user: authUser } = await fakeSignup({
-        name:     name.trim(),
-        email:    email.trim(),
-        password,
-      });
-      login(token, authUser);
-      navigate('/onboarding', { replace: true });
-    } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Something went wrong.');
+      setSubmitting(true);
+      let response
+      if (isOnline) {
+        response = await authApi.signup({
+          name: name.trim(), email: email.trim(), password
+        })
+      } else {
+        response = await fakeSignup({
+          name: name.trim(), email: email.trim(), password
+        })
+      }
+      login(response.token, response.user)
+      navigate('/onboarding')
+    } catch (err: any) {
+      setFieldErrors({
+        name: handleApiError(err)
+      })
+      setServerError(handleApiError(err))
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 

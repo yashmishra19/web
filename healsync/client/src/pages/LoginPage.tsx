@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { authApi } from '../api';
+import { handleApiError } from '../api/apiUtils';
 import { fakeLogin } from '@/mock/auth';
+import { useBackend } from '../context/BackendContext';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import LoadingScreen from '@/components/ui/LoadingScreen';
@@ -9,6 +12,7 @@ import LoadingScreen from '@/components/ui/LoadingScreen';
 export default function LoginPage() {
   const { user, isLoading, login } = useAuth();
   const navigate = useNavigate();
+  const { isOnline } = useBackend();
 
   const [email,     setEmail]     = useState('');
   const [password,  setPassword]  = useState('');
@@ -25,20 +29,29 @@ export default function LoginPage() {
   if (isLoading) return <LoadingScreen />;
 
   async function handleSubmit() {
-    setError('');
-
-    if (!email.trim()) { setError('Email is required.');    return; }
-    if (!password)     { setError('Password is required.'); return; }
-
-    setSubmitting(true);
+    if (!email || !password) {
+      setError('Please fill in all fields')
+      return
+    }
     try {
-      const { token, user: authUser } = await fakeLogin({ email, password });
-      login(token, authUser);
-      navigate('/dashboard', { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      setSubmitting(true)
+      setError('')
+      let response
+      if (isOnline) {
+        response = await authApi.login({ email, password })
+      } else {
+        response = await fakeLogin({ email, password })
+      }
+      login(response.token, response.user)
+      navigate(
+        response.user.hasCompletedOnboarding
+          ? '/dashboard'
+          : '/onboarding'
+      )
+    } catch (err: any) {
+      setError(handleApiError(err))
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 

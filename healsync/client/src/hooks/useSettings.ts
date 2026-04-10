@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { profileApi } from '../api'
+import { useBackend } from '../context/BackendContext'
 import type { ReminderSettings } from '../../../shared/types';
 
 const SETTINGS_KEY = 'healsync_settings';
@@ -15,6 +17,7 @@ const DEFAULT_SETTINGS: ReminderSettings = {
 };
 
 export function useSettings() {
+  const { isOnline } = useBackend()
   const [settings, setSettings] = useState<ReminderSettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -36,6 +39,15 @@ export function useSettings() {
     const newSettings = { ...settings, ...updated };
     setSettings(newSettings);
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+    
+    if (isOnline) {
+      try {
+        await profileApi.updateReminders(newSettings)
+      } catch {
+        // silent fail — localStorage already saved
+      }
+    }
+    
     setIsSaving(false);
     return newSettings;
   };

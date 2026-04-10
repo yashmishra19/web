@@ -1,6 +1,7 @@
 import { Menu, Sun, Moon, Bell } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useBackend } from '../../context/BackendContext';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -10,6 +11,7 @@ interface TopBarProps {
 export default function TopBar({ onMenuClick, title }: TopBarProps) {
   const { user }                       = useAuth();
   const { resolvedTheme, setTheme }    = useTheme();
+  const { isOnline, isChecking }       = useBackend();
 
   const isDark    = resolvedTheme === 'dark';
   const initial   = user?.name?.charAt(0)?.toUpperCase() ?? 'U';
@@ -56,6 +58,27 @@ export default function TopBar({ onMenuClick, title }: TopBarProps) {
             : <Moon size={18} aria-hidden="true" />
           }
         </button>
+
+        {!isChecking && (
+          <div className={`
+            hidden sm:flex items-center gap-1.5
+            px-2.5 py-1 rounded-lg text-xs font-medium
+            border transition-colors
+            ${isOnline
+              ? 'bg-mint-50 border-mint-200 text-mint-600 dark:bg-mint-900/20 dark:border-mint-700 dark:text-mint-400'
+              : 'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-900/20 dark:border-amber-700 dark:text-amber-400'
+            }
+          `}>
+            <div className={`
+              w-1.5 h-1.5 rounded-full
+              ${isOnline
+                ? 'bg-mint-400'
+                : 'bg-amber-400 animate-pulse'
+              }
+            `} />
+            {isOnline ? 'Connected' : 'Offline mode'}
+          </div>
+        )}
 
         {/* Notification bell */}
         <button

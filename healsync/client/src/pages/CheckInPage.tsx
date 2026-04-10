@@ -41,9 +41,9 @@ export default function CheckInPage() {
   const [notes, setNotes] = useState<string>('');
 
   useEffect(() => {
-    if (hasCheckedInToday()) {
-      setAlreadyCheckedIn(true);
-    }
+    hasCheckedInToday().then(has => {
+      if (has) setAlreadyCheckedIn(true);
+    });
   }, [hasCheckedInToday]);
 
   const liveScore = computeWellnessScore({

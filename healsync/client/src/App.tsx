@@ -14,6 +14,7 @@ import JournalPage    from '@/pages/JournalPage';
 import BreathingPage  from '@/pages/BreathingPage';
 import AnalyticsPage  from '@/pages/AnalyticsPage';
 import SettingsPage   from '@/pages/SettingsPage';
+import ChatPage       from '@/pages/ChatPage';
 import NotFoundPage   from '@/pages/NotFoundPage';
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
                   <Route path="/journal"    element={<JournalPage />} />
                   <Route path="/breathing"  element={<BreathingPage />} />
                   <Route path="/analytics"  element={<AnalyticsPage />} />
+                  <Route path="/chat"       element={<ChatPage />} />
                   <Route path="/settings"   element={<SettingsPage />} />
                 </Route>
               </Route>

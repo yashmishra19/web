@@ -11,6 +11,7 @@ const titleMap: Record<string, string> = {
   '/journal':   'Journal',
   '/breathing': 'Breathing',
   '/analytics': 'Analytics',
+  '/chat':      'AI Chat',
   '/settings':  'Settings',
   '/onboarding':'Onboarding',
 };

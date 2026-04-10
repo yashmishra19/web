@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import type { PublicUser } from '@shared/types';
+import { fakeLogout } from '@/mock/auth';
 
 const TOKEN_KEY = 'healsync_token';
 const USER_KEY  = 'healsync_user';
@@ -46,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function logout() {
+    fakeLogout(); // fire-and-forget: simulates server-side token invalidation
     setToken(null);
     setUser(null);
     localStorage.removeItem(TOKEN_KEY);

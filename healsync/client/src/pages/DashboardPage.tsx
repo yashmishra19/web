@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useDashboard } from '../hooks/useDashboard';
+import { useStreak } from '../hooks/useStreak';
+import StreakWidget from '../components/StreakWidget';
 import { MOCK_USER } from '../mock/data';
 import {
   Flame,
@@ -17,7 +19,8 @@ import {
   ClipboardCheck,
   BookOpen,
   BarChart2,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -35,6 +38,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
   const { data, isLoading, error } = useDashboard();
+  const { streakData } = useStreak();
 
   const user = authUser || MOCK_USER;
 
@@ -44,7 +48,7 @@ export default function DashboardPage() {
   else if (currentHour >= 12 && currentHour < 17) timeOfDay = 'afternoon';
 
   const hasCheckedInToday = data?.hasCheckedInToday ?? false;
-  const streakCount = data?.streakCount ?? user?.streakCount ?? 0;
+  const streakCount = streakData.currentStreak;
 
   const score = data?.wellnessScore || 0;
   let scoreColor = '#ef4444';
@@ -150,6 +154,8 @@ export default function DashboardPage() {
           <span className="text-sm font-medium text-white">{streakCount} day streak</span>
         </div>
       </div>
+
+      <StreakWidget />
 
       {/* SECTION 2 — Wellness Score + Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -377,7 +383,7 @@ export default function DashboardPage() {
       {/* SECTION 6 — Quick Actions */}
       <div>
         <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           <div
             className="bg-mint-50 dark:bg-mint-900/20 border border-mint-100 dark:border-mint-800 rounded-2xl p-4 cursor-pointer hover:bg-mint-100 dark:hover:bg-mint-900/30 transition-colors"
             onClick={() => navigate('/checkin')}
@@ -412,6 +418,16 @@ export default function DashboardPage() {
             <BarChart2 className="w-6 h-6 text-amber-600 mb-2" />
             <div className="text-sm font-medium text-amber-800 dark:text-amber-300">Analytics</div>
             <div className="text-xs text-amber-600/70 mt-0.5">See your trends</div>
+          </div>
+
+          <div
+            className="bg-gradient-to-br from-mint-50 to-calm-50 dark:from-mint-900/20 dark:to-calm-900/20 border border-mint-100 dark:border-mint-800 rounded-2xl p-4 cursor-pointer hover:shadow-card-hover transition-all"
+            onClick={() => navigate('/chat')}
+          >
+            <Sparkles className="w-6 h-6 text-mint-500 mb-2" />
+            <div className="text-sm font-medium text-gray-800 dark:text-gray-100">AI Assistant</div>
+            <div className="text-xs opacity-70 dark:text-gray-400">Ask anything</div>
+            <div className="badge-amber mt-1 text-[10px] px-1.5 py-0.5">Beta</div>
           </div>
         </div>
       </div>

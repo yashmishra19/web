@@ -14,7 +14,7 @@ import JournalPage    from '@/pages/JournalPage';
 import BreathingPage  from '@/pages/BreathingPage';
 import AnalyticsPage  from '@/pages/AnalyticsPage';
 import SettingsPage   from '@/pages/SettingsPage';
-import ChatPage       from '@/pages/ChatPage';
+import ChatbotPage    from '@/pages/ChatbotPage';
 import NotFoundPage   from '@/pages/NotFoundPage';
 import MoodHistoryPage from '@/pages/MoodHistoryPage';
 import SelfCarePage   from '@/pages/SelfCarePage';
@@ -39,7 +39,7 @@ export default function App() {
                   <Route path="/journal"    element={<JournalPage />} />
                   <Route path="/breathing"  element={<BreathingPage />} />
                   <Route path="/analytics"  element={<AnalyticsPage />} />
-                  <Route path="/chat"       element={<ChatPage />} />
+                  <Route path="/chat"       element={<ChatbotPage />} />
                   <Route path="/settings"   element={<SettingsPage />} />
                   <Route path="/mood-history" element={<MoodHistoryPage />} />
                   <Route path="/self-care"    element={<SelfCarePage />} />

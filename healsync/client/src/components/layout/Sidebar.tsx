@@ -6,12 +6,12 @@ import {
   Wind,
   BarChart2,
   Settings,
-  MessageSquare,
-  Flame,
   LogOut,
   Calendar,
   Heart,
+  MessageCircle,
 } from 'lucide-react';
+import StreakWidget from '../StreakWidget';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,7 @@ interface NavItem {
   label: string;
   icon:  LucideIcon;
   href:  string;
+  badge?: string;
 }
 
 const navItems: NavItem[] = [
@@ -34,7 +35,7 @@ const navItems: NavItem[] = [
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
   { label: 'Mood History', icon: Calendar,  href: '/mood-history' },
   { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
-  { label: 'AI Chat',    icon: MessageSquare,   href: '/chat'      },
+  { label: 'AI Assistant', icon: MessageCircle, href: '/chat', badge: 'Beta' },
   { label: 'Settings',   icon: Settings,        href: '/settings'  },
 ];
 
@@ -118,21 +119,18 @@ export function SidebarContent({ onLinkClick }: SidebarContentProps) {
           >
             <item.icon size={18} className="shrink-0" aria-hidden="true" />
             {item.label}
+            {item.badge && (
+              <span className="ml-auto text-xs bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded-md font-medium">
+                {item.badge}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>
 
       {/* 3 — Streak badge */}
-      <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800 shrink-0">
-        <div className="flex items-center gap-3">
-          <Flame size={20} className="text-orange-400 shrink-0" aria-hidden="true" />
-          <div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {user?.streakCount ?? 0} day streak
-            </p>
-            <p className="text-xs text-gray-400">Keep it up!</p>
-          </div>
-        </div>
+      <div className="pt-2">
+        <StreakWidget compact />
       </div>
 
       {/* 4 — User area */}

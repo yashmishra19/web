@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckIn } from '../hooks/useCheckIn';
+import { useStreak } from '../hooks/useStreak';
+import { useToastContext } from '../components/ui';
 import {
   SliderInput,
   MoodPicker,
@@ -23,6 +25,8 @@ import {
 export default function CheckInPage() {
   const navigate = useNavigate();
   const { saveCheckIn, hasCheckedInToday, computeWellnessScore } = useCheckIn();
+  const { recordCheckIn } = useStreak();
+  const { showToast } = useToastContext();
 
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +62,15 @@ export default function CheckInPage() {
         energyLevel,
         notes
       });
+      
+      const updated = recordCheckIn();
+      if (updated && updated.currentStreak > 1 && showToast) {
+        showToast(
+          `🔥 ${updated.currentStreak} day streak! Keep it up!`,
+          'success'
+        );
+      }
+
       setIsSubmitting(false);
       setIsSubmitted(true);
     }, 700);

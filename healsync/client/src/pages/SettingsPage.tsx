@@ -2,6 +2,7 @@
 import { useSettings } from '../hooks/useSettings';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useToastContext } from '../components/ui';
 import Toggle from '../components/ui/Toggle';
 import { PageHeader, Button, Spinner } from '../components/ui';
 import { useNotifications } from '../hooks/useNotifications';
@@ -66,6 +67,7 @@ export default function SettingsPage() {
   const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { requestPermission, permission, isSupported } = useNotifications();
+  const { showToast } = useToastContext();
 
   return (
     <div className="space-y-4 page-enter max-w-xl mx-auto pb-24 md:pb-6">
@@ -224,7 +226,13 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <ClipboardCheck size={16} className="text-mint-500" /> Daily check-in
               </div>
-              <Toggle checked={settings.checkInEnabled} onChange={(v) => updateSettings({ checkInEnabled: v })} />
+              <Toggle
+                checked={settings.checkInEnabled}
+                onChange={(v) => {
+                  updateSettings({ checkInEnabled: v })
+                  if (v) showToast('📋 Daily check-in reminder enabled', 'success')
+                }}
+              />
             </div>
             {settings.checkInEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
@@ -244,7 +252,13 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Droplets size={16} className="text-blue-500" /> Water reminders
               </div>
-              <Toggle checked={settings.waterEnabled} onChange={(v) => updateSettings({ waterEnabled: v })} />
+              <Toggle
+                checked={settings.waterEnabled}
+                onChange={(v) => {
+                  updateSettings({ waterEnabled: v })
+                  if (v) showToast('💧 Water reminders enabled', 'success')
+                }}
+              />
             </div>
             {settings.waterEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
@@ -268,7 +282,13 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Moon size={16} className="text-indigo-500" /> Bedtime reminder
               </div>
-              <Toggle checked={settings.sleepEnabled} onChange={(v) => updateSettings({ sleepEnabled: v })} />
+              <Toggle
+                checked={settings.sleepEnabled}
+                onChange={(v) => {
+                  updateSettings({ sleepEnabled: v })
+                  if (v) showToast('🌙 Bedtime reminder enabled', 'success')
+                }}
+              />
             </div>
             {settings.sleepEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
@@ -288,7 +308,13 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <Activity size={16} className="text-amber-500" /> Movement break
               </div>
-              <Toggle checked={settings.stretchEnabled} onChange={(v) => updateSettings({ stretchEnabled: v })} />
+              <Toggle
+                checked={settings.stretchEnabled}
+                onChange={(v) => {
+                  updateSettings({ stretchEnabled: v })
+                  if (v) showToast('🧘 Movement break reminder enabled', 'success')
+                }}
+              />
             </div>
             {settings.stretchEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">

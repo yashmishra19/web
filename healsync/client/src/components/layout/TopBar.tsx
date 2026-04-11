@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Menu, Sun, Moon, Bell } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useBackend } from '../../context/BackendContext';
+import { useNotifications } from '../../hooks/useNotifications';
+import NotificationDropdown from '../NotificationDropdown';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -9,13 +12,28 @@ interface TopBarProps {
 }
 
 export default function TopBar({ onMenuClick, title }: TopBarProps) {
-  const { user }                       = useAuth();
-  const { resolvedTheme, setTheme }    = useTheme();
-  const { isOnline, isChecking }       = useBackend();
+  const { user }                    = useAuth();
+  const { resolvedTheme, setTheme } = useTheme();
+  const { isOnline, isChecking }    = useBackend();
+  const {
+    activeReminderCount,
+    unseenCount,
+    markAllSeen,
+  } = useNotifications();
 
-  const isDark    = resolvedTheme === 'dark';
-  const initial   = user?.name?.charAt(0)?.toUpperCase() ?? 'U';
-  const hasUnread = true; // hardcoded until notifications are implemented
+  const [showNotifs, setShowNotifs] = useState(false);
+
+  const isDark   = resolvedTheme === 'dark';
+  const initial  = user?.name?.charAt(0)?.toUpperCase() ?? 'U';
+
+  // Badge = unseen count first, then fall back to total active count
+  const badgeCount = unseenCount > 0 ? unseenCount : activeReminderCount;
+
+  const handleBellClick = () => {
+    const opening = !showNotifs;
+    setShowNotifs(opening);
+    if (opening) markAllSeen();
+  };
 
   return (
     <header
@@ -71,29 +89,35 @@ export default function TopBar({ onMenuClick, title }: TopBarProps) {
           `}>
             <div className={`
               w-1.5 h-1.5 rounded-full
-              ${isOnline
-                ? 'bg-mint-400'
-                : 'bg-amber-400 animate-pulse'
-              }
+              ${isOnline ? 'bg-mint-400' : 'bg-amber-400 animate-pulse'}
             `} />
             {isOnline ? 'Connected' : 'Offline mode'}
           </div>
         )}
 
-        {/* Notification bell */}
-        <button
-          type="button"
-          aria-label={hasUnread ? 'Notifications (unread)' : 'Notifications'}
-          className="btn-ghost p-2 rounded-xl relative"
-        >
-          <Bell size={18} aria-hidden="true" />
-          {hasUnread && (
-            <span
-              className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"
-              aria-hidden="true"
-            />
-          )}
-        </button>
+        {/* Notification bell with dropdown */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={handleBellClick}
+            aria-label={badgeCount > 0 ? `Notifications (${badgeCount})` : 'Notifications'}
+            className="btn-ghost p-2 rounded-xl relative"
+          >
+            <Bell size={18} className="text-gray-600 dark:text-gray-300" aria-hidden="true" />
+
+            {/* Badge */}
+            {badgeCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-red-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center px-1 leading-none">
+                {badgeCount > 9 ? '9+' : badgeCount}
+              </span>
+            )}
+          </button>
+
+          <NotificationDropdown
+            isOpen={showNotifs}
+            onClose={() => setShowNotifs(false)}
+          />
+        </div>
 
         {/* User avatar — mobile only */}
         <div

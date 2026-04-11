@@ -14,9 +14,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { isOnline } = useBackend();
 
-  const [email,     setEmail]     = useState('');
-  const [password,  setPassword]  = useState('');
-  const [error,     setError]     = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   // Redirect already-authenticated users
@@ -76,7 +76,7 @@ export default function LoginPage() {
             >
               <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.75 8.66A9 9 0 0 1 3 11a9 9 0 0 1 9-9z" />
               <line x1="12" y1="8" x2="12" y2="16" />
-              <line x1="8"  y1="12" x2="16" y2="12" />
+              <line x1="8" y1="12" x2="16" y2="12" />
             </svg>
           </div>
           <h1 className="text-xl font-medium text-gray-800 dark:text-gray-100 mt-3">HealSync</h1>
@@ -117,7 +117,7 @@ export default function LoginPage() {
           {/* Demo hint */}
           <div className="bg-mint-50 dark:bg-mint-900/20 rounded-xl p-3">
             <p className="text-xs text-mint-700 dark:text-mint-400">
-              Demo: demo@healsync.app / demo1234
+
             </p>
           </div>
         </div>

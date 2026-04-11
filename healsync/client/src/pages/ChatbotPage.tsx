@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-
+import { useAuth } from '../context/AuthContext';
 import { Send, Bot, Sparkles, Lock, RefreshCw, MapPin } from 'lucide-react';
 import { chatApi } from '../api';
 
@@ -26,12 +26,39 @@ function getLocation(): Promise<Coords> {
 }
 
 export default function ChatbotPage() {
+  const { user, profile } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [emergencyActive, setEmergencyActive] = useState(false);
   const [locationShared, setLocationShared] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Build a context string from the user's profile to personalise AI responses
+  function buildUserContext(): string {
+    const parts: string[] = [];
+    if (user?.name) parts.push(`User name: ${user.name}`);
+    if (profile) {
+      if (profile.age)               parts.push(`Age: ${profile.age}`);
+      if (profile.gender)            parts.push(`Gender: ${profile.gender}`);
+      if (profile.heightCm)          parts.push(`Height: ${profile.heightCm}cm`);
+      if (profile.weightKg)          parts.push(`Weight: ${profile.weightKg}kg`);
+      if (profile.sleepHours)        parts.push(`Sleep target: ${profile.sleepHours} hrs/night`);
+      if (profile.activityLevel)     parts.push(`Activity level: ${profile.activityLevel}`);
+      if (profile.waterIntakeLiters) parts.push(`Water intake goal: ${profile.waterIntakeLiters}L/day`);
+      if (profile.dietPreference)    parts.push(`Diet: ${profile.dietPreference}`);
+      if (profile.stressLevel)       parts.push(`Stress level: ${profile.stressLevel}/10`);
+      if (profile.moodBaseline)      parts.push(`Mood baseline: ${profile.moodBaseline}/10`);
+      if (profile.workStudyHours)    parts.push(`Work/study: ${profile.workStudyHours} hrs/day`);
+      if (profile.mainGoal)          parts.push(`Main health goal: ${profile.mainGoal}`);
+      if (profile.existingConditions?.length) {
+        parts.push(`Health conditions: ${Array.isArray(profile.existingConditions)
+          ? profile.existingConditions.join(', ')
+          : profile.existingConditions}`);
+      }
+    }
+    return parts.join('\n');
+  }
 
   useEffect(() => {
     loadHistory()
@@ -73,7 +100,8 @@ export default function ChatbotPage() {
     if (coords) setLocationShared(true)
 
     try {
-      const response = await chatApi.sendMessage(content, coords ?? undefined)
+      const userContext = buildUserContext();
+      const response = await chatApi.sendMessage(content, coords ?? undefined, userContext || undefined)
       if (response?.emergencyDispatched) setEmergencyActive(true)
       if (response?.data) setMessages(prev => [...prev, response.data])
     } catch (err: any) {

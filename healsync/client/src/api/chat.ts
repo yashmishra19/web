@@ -8,9 +8,10 @@ export const chatApi = {
 
   sendMessage: async (
     message: string,
-    location?: { latitude: number; longitude: number }
+    location?: { latitude: number; longitude: number },
+    userContext?: string
   ) => {
-    const res = await api.post('/chat', { message, location })
+    const res = await api.post('/chat', { message, location, userContext })
     // Returns { data: ChatMessage, emergencyDispatched: boolean }
     return res.data
   },

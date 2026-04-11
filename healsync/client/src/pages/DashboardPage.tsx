@@ -4,7 +4,8 @@ import { useDashboard } from '../hooks/useDashboard'
 import { useAuth } from '../context/AuthContext'
 import { useBackend } from '../context/BackendContext'
 import { useTheme } from '../context/ThemeContext'
-import { useGoals } from '../hooks/useGoals'
+import { useGoals } from '../context/GoalsContext'
+import type { HealthGoal } from '../context/GoalsContext'
 import { vitalsApi } from '../api'
 import GoalModal from '../components/GoalModal'
 
@@ -44,13 +45,12 @@ export default function DashboardPage() {
   const { resolvedTheme } = useTheme()
   const isDark     = resolvedTheme === 'dark'
   const { data, isLoading } = useDashboard()
-  const { goals, toggleGoal } = useGoals()
+  const { goals, addGoal, toggleGoal, deleteGoal } = useGoals()
 
   const [latestVitals, setLatestVitals] =
     useState<VitalsReading | null>(null)
   const [showGoalModal, setShowGoalModal] =
     useState(false)
-  const { addGoal } = useGoals()
 
   const hour = new Date().getHours()
   const timeOfDay =
@@ -693,66 +693,67 @@ export default function DashboardPage() {
 
           {/* Goals list */}
           {goals.length === 0 ? (
-            <div className="flex-1 flex flex-col
-              items-center justify-center text-center">
-              <p className="text-sm text-gray-400
-                dark:text-gray-500">
-                No goals yet
-              </p>
-              <p className="text-xs text-gray-400
-                dark:text-gray-500 mt-1">
-                Tap + to add your first goal
-              </p>
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-4">
+              <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-2">
+                <Target size={18} className="text-gray-400 dark:text-gray-500" />
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">No goals yet</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Tap + to add your first health goal</p>
             </div>
           ) : (
-            <div className="flex-1 space-y-2
-              overflow-y-auto">
-              {goals.slice(0,4).map(goal => (
-                <div key={goal.id}
-                  className="flex items-center
-                    gap-2.5 p-2 rounded-xl
-                    bg-gray-50 dark:bg-gray-800">
+            <div className="flex-1 space-y-2 overflow-y-auto">
+              {goals.slice(0, 5).map(goal => (
+                <div
+                  key={goal.id}
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 group"
+                >
+                  {/* Checkbox */}
                   <button
-                    onClick={() =>
-                      toggleGoal(goal.id)}
-                    className={`
-                      w-5 h-5 rounded-full border-2
-                      flex items-center justify-center
-                      shrink-0 transition-colors
-                      ${goal.completed
+                    onClick={() => toggleGoal(goal.id)}
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                      goal.completed
                         ? 'bg-mint-500 border-mint-500'
-                        : 'border-gray-300 dark:border-gray-600'
-                      }
-                    `}>
+                        : 'border-gray-300 dark:border-gray-600 hover:border-mint-400'
+                    }`}
+                  >
                     {goal.completed && (
-                      <svg width="10" height="10"
-                        viewBox="0 0 10 10">
-                        <path d="M2 5l2.5 2.5L8 3"
-                          stroke="white"
-                          strokeWidth="1.5"
-                          fill="none"
-                          strokeLinecap="round" />
+                      <svg width="10" height="10" viewBox="0 0 10 10">
+                        <path d="M2 5l2 2.5L8 3" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     )}
                   </button>
+
+                  {/* Goal info */}
                   <div className="flex-1 min-w-0">
-                    <p className={`text-xs font-medium
-                      leading-snug
-                      ${goal.completed
+                    <p className={`text-xs font-medium leading-snug truncate ${
+                      goal.completed
                         ? 'line-through text-gray-400 dark:text-gray-500'
                         : 'text-gray-700 dark:text-gray-300'
-                      }`}>
+                    }`}>
                       {goal.title}
                     </p>
                     {goal.target && (
-                      <p className="text-xs
-                        text-gray-400 dark:text-gray-500">
-                        {goal.target}
-                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{goal.target}</p>
                     )}
                   </div>
+
+                  {/* Delete button — visible on hover */}
+                  <button
+                    onClick={() => deleteGoal(goal.id)}
+                    className="opacity-0 group-hover:opacity-100 text-gray-300 dark:text-gray-600 hover:text-red-400 dark:hover:text-red-500 transition-all shrink-0"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
               ))}
+
+              {goals.length > 5 && (
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center pt-1">
+                  +{goals.length - 5} more goals
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -905,7 +906,7 @@ export default function DashboardPage() {
       <GoalModal
         isOpen={showGoalModal}
         onClose={() => setShowGoalModal(false)}
-        onSave={(goal) => {
+        onSave={(goal: HealthGoal) => {
           addGoal(goal)
           setShowGoalModal(false)
         }}

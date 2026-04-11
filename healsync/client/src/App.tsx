@@ -5,6 +5,7 @@ import { ToastProvider } from '@/components/ui';
 import { AppLayout } from '@/components/layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { BackendProvider } from './context/BackendContext';
+import { GoalsProvider } from './context/GoalsContext';
 import { useNotifications } from './hooks/useNotifications';
 
 import LoginPage      from '@/pages/LoginPage';
@@ -32,8 +33,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <BackendProvider>
-        <ToastProvider>
-          <AuthProvider>
+        <GoalsProvider>
+          <ToastProvider>
+            <AuthProvider>
             <NotificationInitializer />
             <BrowserRouter>
             <Routes>
@@ -65,8 +67,9 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
-          </AuthProvider>
-        </ToastProvider>
+            </AuthProvider>
+          </ToastProvider>
+        </GoalsProvider>
       </BackendProvider>
     </ThemeProvider>
   );

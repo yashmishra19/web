@@ -114,12 +114,7 @@ export default function LoginPage() {
             Sign in
           </Button>
 
-          {/* Demo hint */}
-          <div className="bg-mint-50 dark:bg-mint-900/20 rounded-xl p-3">
-            <p className="text-xs text-mint-700 dark:text-mint-400">
-              Demo: demo@healsync.app / demo1234
-            </p>
-          </div>
+          
         </div>
 
         {/* Footer */}

@@ -13,9 +13,7 @@ export default function DisclaimerBanner() {
         aria-hidden="true"
       />
       <p className="text-xs leading-relaxed text-calm-700 dark:text-calm-300">
-        <strong>Not medical advice.</strong> HealSync provides general wellness guidance only and
-        is not a substitute for professional medical, psychiatric, or therapeutic care. If you are
-        in distress, please contact a qualified healthcare provider or a crisis helpline.
+        <strong>Not medical advice.</strong>
       </p>
     </div>
   );

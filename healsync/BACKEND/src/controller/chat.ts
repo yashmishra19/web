@@ -4,14 +4,14 @@ import { Chat, UserProfile, User } from '../models'
 import { AuthRequest } from '../middleware/auth'
 
 // Read lazily so dotenv has already run by the time these are called
-const getApiKey     = () => process.env.AI_CHATBOT || ''
-const getModel      = () => process.env.GEMINI_MODEL || 'gemini-2.5-flash'
+const getApiKey = () => process.env.AI_CHATBOT || ''
+const getModel = () => process.env.GEMINI_MODEL || 'gemini-2.5-flash'
 const getDoctorPhone = () => process.env.EMERGENCY_DOCTOR_PHONE || '+918856853522'
-const getDoctorName  = () => process.env.EMERGENCY_DOCTOR_NAME  || 'Dr Sharan'
+const getDoctorName = () => process.env.EMERGENCY_DOCTOR_NAME || 'Dr Sharan'
 
 // ─── Gemini — tries multiple models in sequence ───────────────────────────────
 const MODEL_FALLBACKS = [
-  'gemini-3.0-flash',
+  'gemini-1.5-flash-8b',
   'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
@@ -96,7 +96,7 @@ async function dispatchEmergencySms(
   location?: { latitude: number; longitude: number },
 ) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
-  const authToken  = process.env.TWILIO_AUTH_TOKEN
+  const authToken = process.env.TWILIO_AUTH_TOKEN
   const fromNumber = process.env.TWILIO_PHONE_NUMBER
 
   const mapsLink = location
@@ -168,7 +168,7 @@ No markdown, no explanation. Raw JSON array only.`
       generationConfig: { temperature: 0.1 },
     }
 
-    const res  = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     const data = await res.json() as any
     let raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]'
     raw = raw.replace(/```json/g, '').replace(/```/g, '').trim()
@@ -296,9 +296,9 @@ export const getChatHistory = async (req: AuthRequest, res: Response, next: Next
       if (!user) { res.status(404).json({ error: 'User not found' }); return }
 
       const systemContext = buildSystemContext(user, profile)
-      const greetPrompt  = 'Please introduce yourself as HealSync AI, my personal medical companion. Greet me warmly by my name and briefly mention my recorded medical data (conditions, medications, allergies) so I know you are personalised to me.'
-      const greetReply   = await callGemini([{ role: 'user', text: greetPrompt }], systemContext)
-      const initMsg      = await Chat.create({ userId, role: 'model', text: greetReply })
+      const greetPrompt = 'Please introduce yourself as HealSync AI, my personal medical companion. Greet me warmly by my name and briefly mention my recorded medical data (conditions, medications, allergies) so I know you are personalised to me.'
+      const greetReply = await callGemini([{ role: 'user', text: greetPrompt }], systemContext)
+      const initMsg = await Chat.create({ userId, role: 'model', text: greetReply })
 
       res.status(200).json({ data: [initMsg] })
       return

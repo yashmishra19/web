@@ -9,13 +9,60 @@ import {
   Sun, Moon, Monitor, Bell,
   LogOut, Download, Trash2, ChevronRight,
   Edit3, Droplets, Activity,
-  Check, ClipboardCheck 
+  Check, ClipboardCheck,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// ── Formatters ────────────────────────────────────────────
+
+function formatGoal(goal: string): string {
+  const map: Record<string, string> = {
+    lose_weight:       'Weight',
+    gain_muscle:       'Muscle',
+    improve_sleep:     'Sleep',
+    reduce_stress:     'Stress',
+    improve_fitness:   'Fitness',
+    better_nutrition:  'Nutrition',
+    mental_wellness:   'Mental',
+    general_health:    'Health',
+    better_sleep:      'Sleep',
+    fitness:           'Fitness',
+    better_routine:    'Routine',
+    improve_focus:     'Focus',
+  };
+  return map[goal] ?? goal.replace(/_/g, ' ');
+}
+
+function formatActivity(a: string): string {
+  const map: Record<string, string> = {
+    sedentary:         'Sedentary',
+    lightly_active:    'Lightly active',
+    moderately_active: 'Moderately active',
+    very_active:       'Very active',
+    extra_active:      'Extra active',
+  };
+  return map[a] ?? a;
+}
+
+function formatDiet(d: string): string {
+  const map: Record<string, string> = {
+    omnivore:     'Omnivore',
+    vegetarian:   'Vegetarian',
+    vegan:        'Vegan',
+    pescatarian:  'Pescatarian',
+    keto:         'Keto',
+    paleo:        'Paleo',
+    gluten_free:  'Gluten-free',
+    other:        'Other',
+  };
+  return map[d] ?? d;
+}
+
+// ── Component ─────────────────────────────────────────────
+
 export default function SettingsPage() {
   const { settings, isSaving, updateSettings, resetSettings } = useSettings();
-  const { user, logout } = useAuth();
+  const { user, logout, profile } = useAuth();
   const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { requestPermission, permission, isSupported } = useNotifications();
@@ -36,29 +83,77 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 dark:border-gray-800 pt-4 mt-0">
+        <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+          {/* Stats grid */}
           <div className="grid grid-cols-4 gap-2">
             <div className="text-center bg-gray-50 dark:bg-gray-800 rounded-xl p-2.5">
-              <div className="text-base font-medium text-gray-800 dark:text-white">—</div>
-              <div className="text-xs text-gray-400 mt-0.5">Age</div>
+              <p className="text-base font-medium text-gray-800 dark:text-white">
+                {profile?.age ?? '—'}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Age</p>
             </div>
             <div className="text-center bg-gray-50 dark:bg-gray-800 rounded-xl p-2.5">
-              <div className="text-base font-medium text-gray-800 dark:text-white">—</div>
-              <div className="text-xs text-gray-400 mt-0.5">cm</div>
+              <p className="text-base font-medium text-gray-800 dark:text-white">
+                {profile?.heightCm ?? '—'}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">cm</p>
             </div>
             <div className="text-center bg-gray-50 dark:bg-gray-800 rounded-xl p-2.5">
-              <div className="text-base font-medium text-gray-800 dark:text-white">—</div>
-              <div className="text-xs text-gray-400 mt-0.5">kg</div>
+              <p className="text-base font-medium text-gray-800 dark:text-white">
+                {profile?.weightKg ?? '—'}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">kg</p>
             </div>
             <div className="text-center bg-gray-50 dark:bg-gray-800 rounded-xl p-2.5">
-              <div className="text-base font-medium text-gray-800 dark:text-white capitalize">
-                —
-              </div>
-              <div className="text-xs text-gray-400 mt-0.5">Goal</div>
+              <p className="text-base font-medium text-gray-800 dark:text-white capitalize">
+                {profile?.mainGoal ? formatGoal(profile.mainGoal) : '—'}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Goal</p>
             </div>
           </div>
 
-          <button 
+          {/* Extended profile details */}
+          {profile && (
+            <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-1.5">
+              {[
+                profile.activityLevel && {
+                  label: 'Activity',
+                  value: formatActivity(profile.activityLevel),
+                },
+                profile.dietPreference && {
+                  label: 'Diet',
+                  value: formatDiet(profile.dietPreference),
+                },
+                profile.sleepHours && {
+                  label: 'Sleep target',
+                  value: `${profile.sleepHours} hrs/night`,
+                },
+                profile.waterIntakeLiters && {
+                  label: 'Water target',
+                  value: `${profile.waterIntakeLiters}L/day`,
+                },
+                profile.workStudyHours && {
+                  label: 'Work hours',
+                  value: `${profile.workStudyHours} hrs/day`,
+                },
+                profile.existingConditions?.length && {
+                  label: 'Conditions',
+                  value: Array.isArray(profile.existingConditions)
+                    ? profile.existingConditions.join(', ')
+                    : String(profile.existingConditions),
+                },
+              ]
+                .filter(Boolean)
+                .map((item: any) => (
+                  <div key={item.label} className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{item.label}</span>
+                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{item.value}</span>
+                  </div>
+                ))}
+            </div>
+          )}
+
+          <button
             className="btn-ghost w-full mt-3 text-sm flex items-center justify-center gap-2"
             onClick={() => navigate('/onboarding')}
           >
@@ -73,7 +168,7 @@ export default function SettingsPage() {
           Appearance
         </h2>
         <div className="grid grid-cols-3 gap-2">
-          <div 
+          <div
             onClick={() => setTheme('light')}
             className={`cursor-pointer rounded-xl border p-3 text-center transition-all ${resolvedTheme === 'light' ? 'border-mint-400 bg-mint-50 dark:bg-mint-900/20 dark:border-mint-600' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300'}`}
           >
@@ -81,7 +176,7 @@ export default function SettingsPage() {
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Light</div>
             {resolvedTheme === 'light' && <Check size={12} className="text-mint-500 mx-auto mt-1" />}
           </div>
-          <div 
+          <div
             onClick={() => setTheme('dark')}
             className={`cursor-pointer rounded-xl border p-3 text-center transition-all ${resolvedTheme === 'dark' ? 'border-mint-400 bg-mint-50 dark:bg-mint-900/20 dark:border-mint-600' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300'}`}
           >
@@ -89,9 +184,9 @@ export default function SettingsPage() {
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Dark</div>
             {resolvedTheme === 'dark' && <Check size={12} className="text-mint-500 mx-auto mt-1" />}
           </div>
-          <div 
+          <div
             onClick={() => setTheme('system')}
-            className={`cursor-pointer rounded-xl border p-3 text-center transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300`}
+            className="cursor-pointer rounded-xl border p-3 text-center transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300"
           >
             <Monitor size={20} className="text-gray-500 dark:text-gray-400 mx-auto mb-1" />
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">System</div>
@@ -133,11 +228,11 @@ export default function SettingsPage() {
             </div>
             {settings.checkInEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
-                <input 
-                  type="time" 
+                <input
+                  type="time"
                   className="input text-sm py-1 px-3 w-auto"
-                  value={settings.checkInTime} 
-                  onChange={(e) => updateSettings({ checkInTime: e.target.value })} 
+                  value={settings.checkInTime}
+                  onChange={(e) => updateSettings({ checkInTime: e.target.value })}
                 />
                 <span className="text-xs text-gray-400">reminder</span>
               </div>
@@ -153,7 +248,7 @@ export default function SettingsPage() {
             </div>
             {settings.waterEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
-                <select 
+                <select
                   className="input text-sm py-1 px-3 w-auto"
                   value={settings.waterIntervalHours}
                   onChange={(e) => updateSettings({ waterIntervalHours: Number(e.target.value) })}
@@ -177,11 +272,11 @@ export default function SettingsPage() {
             </div>
             {settings.sleepEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
-                <input 
-                  type="time" 
+                <input
+                  type="time"
                   className="input text-sm py-1 px-3 w-auto"
-                  value={settings.sleepTime} 
-                  onChange={(e) => updateSettings({ sleepTime: e.target.value })} 
+                  value={settings.sleepTime}
+                  onChange={(e) => updateSettings({ sleepTime: e.target.value })}
                 />
                 <span className="text-xs text-gray-400">reminder</span>
               </div>
@@ -197,11 +292,11 @@ export default function SettingsPage() {
             </div>
             {settings.stretchEnabled && (
               <div className="mt-2 ml-6 flex items-center gap-2">
-                <input 
-                  type="time" 
+                <input
+                  type="time"
                   className="input text-sm py-1 px-3 w-auto"
-                  value={settings.stretchTime} 
-                  onChange={(e) => updateSettings({ stretchTime: e.target.value })} 
+                  value={settings.stretchTime}
+                  onChange={(e) => updateSettings({ stretchTime: e.target.value })}
                 />
                 <span className="text-xs text-gray-400">reminder</span>
               </div>
@@ -222,7 +317,10 @@ export default function SettingsPage() {
             </div>
             <ChevronRight size={14} className="text-gray-400" />
           </div>
-          <div className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors" onClick={resetSettings}>
+          <div
+            className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+            onClick={resetSettings}
+          >
             <div className="flex items-center gap-2 text-sm text-red-500 dark:text-red-400">
               <Trash2 size={16} /> Reset health data
             </div>
@@ -232,7 +330,7 @@ export default function SettingsPage() {
       </div>
 
       {/* LOGOUT */}
-      <button 
+      <button
         className="btn-ghost w-full text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
         onClick={() => {
           logout();
@@ -241,7 +339,6 @@ export default function SettingsPage() {
       >
         <LogOut size={16} /> Sign out
       </button>
-
     </div>
   );
 }

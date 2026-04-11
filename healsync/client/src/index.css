@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure all text is visible in dark mode */
+@layer base {
+  .dark body {
+    color: theme('colors.gray.100');
+  }
+
+  /* Fix any hardcoded text colors */
+  .dark p:not([class*="text-"]) {
+    color: theme('colors.gray.300');
+  }
+
+  /* Fix icon visibility */
+  .dark svg:not([class*="text-"]) {
+    color: theme('colors.gray.400');
+  }
+}
+
+/* Better card contrast in dark mode */
+.dark .card,
+.dark [class*="bg-white"] {
+  background-color: theme('colors.gray.900') !important;
+  border-color: theme('colors.gray.800') !important;
+}
+
+/* Fix input visibility */
+.dark input:not([type="range"]),
+.dark select,
+.dark textarea {
+  color: theme('colors.gray.100') !important;
+  background-color: theme('colors.gray.800') !important;
+}
+
+/* Fix placeholder visibility */
+.dark ::placeholder {
+  color: theme('colors.gray.500') !important;
+}
+
+/* Fix badge text in dark mode */
+.dark .badge {
+  opacity: 1 !important;
+}
 @layer components {
   /* -------------------------------------------------------------------------
    * Cards
@@ -40,7 +81,7 @@
            text-gray-600 font-medium rounded-xl px-4 py-2
            hover:bg-gray-100 active:scale-[0.98]
            transition-all duration-150
-           dark:text-gray-400 dark:hover:bg-gray-800
+           dark:text-gray-300 dark:hover:bg-gray-800
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 

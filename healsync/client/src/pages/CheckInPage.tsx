@@ -9,7 +9,6 @@ import {
   Textarea,
   Button,
   PageHeader,
-  DisclaimerBanner,
   ProgressRing
 } from '../components/ui';
 import {
@@ -387,7 +386,7 @@ export default function CheckInPage() {
         </div>
       </div>
 
-      <DisclaimerBanner />
+
 
       <Button
         variant="primary"

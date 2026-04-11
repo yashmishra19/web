@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Pause, RotateCcw, Wind, Check } from 'lucide-react';
-import { PageHeader, Card, Button, Badge, DisclaimerBanner, MoodPicker } from '../components/ui';
+import { PageHeader, Card, Button, Badge, MoodPicker } from '../components/ui';
 
 const TECHNIQUES = [
   {
@@ -379,7 +379,7 @@ export default function BreathingPage() {
             </ul>
           </Card>
 
-          <DisclaimerBanner />
+
         </>
       )}
     </div>

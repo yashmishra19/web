@@ -74,7 +74,7 @@ function StatCard({
       </div>
 
       {/* Value */}
-      <p className="text-2xl font-medium text-gray-800 dark:text-gray-100 mt-2">{value}</p>
+      <p className="text-2xl font-medium text-gray-900 dark:text-white mt-2">{value}</p>
 
       {/* Subtitle */}
       {subtitle && (

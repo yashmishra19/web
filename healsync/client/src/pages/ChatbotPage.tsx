@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { PageHeader, DisclaimerBanner } from '../components/ui';
+
 import { Send, Bot, Sparkles, Lock, RefreshCw, MapPin } from 'lucide-react';
 import { chatApi } from '../api';
 
@@ -223,7 +223,7 @@ export default function ChatbotPage() {
       </div>
 
       <div className="mt-4">
-        <DisclaimerBanner />
+
         <div className="text-xs text-gray-400 text-center mt-2 flex items-center justify-center gap-1">
           <Lock size={10} />
           Conversations are processed strictly using secure AI models to provide insights

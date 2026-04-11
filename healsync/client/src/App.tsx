@@ -5,6 +5,7 @@ import { ToastProvider } from '@/components/ui';
 import { AppLayout } from '@/components/layout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { BackendProvider } from './context/BackendContext';
+import { useNotifications } from './hooks/useNotifications';
 
 import LoginPage      from '@/pages/LoginPage';
 import SignupPage     from '@/pages/SignupPage';
@@ -17,11 +18,15 @@ import AnalyticsPage  from '@/pages/AnalyticsPage';
 import SettingsPage   from '@/pages/SettingsPage';
 import ChatbotPage    from '@/pages/ChatbotPage';
 import NotFoundPage   from '@/pages/NotFoundPage';
-import MoodHistoryPage from '@/pages/MoodHistoryPage';
 import SelfCarePage   from '@/pages/SelfCarePage';
 import LandingPage    from '@/pages/LandingPage';
 import VitalsPage       from '@/pages/VitalsPage';
 import NearbyFacilitiesPage from '@/pages/NearbyFacilitiesPage';
+
+function NotificationInitializer() {
+  useNotifications()
+  return null
+}
 
 export default function App() {
   return (
@@ -29,6 +34,7 @@ export default function App() {
       <BackendProvider>
         <ToastProvider>
           <AuthProvider>
+            <NotificationInitializer />
             <BrowserRouter>
             <Routes>
               {/* Public routes */}
@@ -46,10 +52,9 @@ export default function App() {
                   <Route path="/analytics"  element={<AnalyticsPage />} />
                   <Route path="/chat"       element={<ChatbotPage />} />
                   <Route path="/settings"   element={<SettingsPage />} />
-                  <Route path="/mood-history" element={<MoodHistoryPage />} />
-                  <Route path="/self-care"    element={<SelfCarePage />} />
-                  <Route path="/vitals"       element={<VitalsPage />} />
-                  <Route path="/nearby"       element={<NearbyFacilitiesPage />} />
+                  <Route path="/self-care"  element={<SelfCarePage />} />
+                  <Route path="/vitals"     element={<VitalsPage />} />
+                  <Route path="/nearby"     element={<NearbyFacilitiesPage />} />
                 </Route>
               </Route>
 
@@ -60,8 +65,8 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
-        </AuthProvider>
-      </ToastProvider>
+          </AuthProvider>
+        </ToastProvider>
       </BackendProvider>
     </ThemeProvider>
   );

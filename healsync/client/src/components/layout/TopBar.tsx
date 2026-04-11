@@ -38,7 +38,7 @@ export default function TopBar({ onMenuClick, title }: TopBarProps) {
 
         {/* Page title */}
         {title && (
-          <span className="text-base font-medium text-gray-800 dark:text-gray-100 truncate">
+          <span className="text-base font-medium text-gray-800 dark:text-white truncate">
             {title}
           </span>
         )}

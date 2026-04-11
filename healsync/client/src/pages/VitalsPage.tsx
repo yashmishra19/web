@@ -7,7 +7,6 @@ import PageHeader from '../components/ui/PageHeader'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'
-import DisclaimerBanner from '../components/ui/DisclaimerBanner'
 import { EmptyState, SkeletonCard } from '../components/ui'
 import { MOCK_VITALS_READINGS } from '../mock/data'
 import { Input } from '../components/ui'
@@ -602,7 +601,7 @@ export default function VitalsPage() {
 
       {/* SECTION 5: DISCLAIMER */}
       <div className="pt-4">
-        <DisclaimerBanner />
+
         <p className="text-[10px] text-gray-400 text-center mt-3 max-w-md mx-auto">
           Vitals readings from consumer devices are for general wellness tracking only and may not be medically accurate.
         </p>

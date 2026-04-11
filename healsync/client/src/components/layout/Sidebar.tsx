@@ -7,12 +7,10 @@ import {
   BarChart2,
   Settings,
   LogOut,
-  Calendar,
   Heart,
   MessageCircle,
   MapPin,
 } from 'lucide-react';
-import StreakWidget from '../StreakWidget';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useBackend } from '../../context/BackendContext';
@@ -37,7 +35,6 @@ const navItems: NavItem[] = [
   { label: 'Breathing',  icon: Wind,            href: '/breathing' },
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
   { label: 'Vitals',     icon: Heart,           href: '/vitals'    },
-  { label: 'Mood History', icon: Calendar,  href: '/mood-history' },
   { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
   { label: 'AI Assistant',    icon: MessageCircle, href: '/chat',   badge: 'AI'  },
   { label: 'Nearby Facilities', icon: MapPin,       href: '/nearby', badge: 'New' },
@@ -122,11 +119,11 @@ export function SidebarContent({ onLinkClick }: SidebarContentProps) {
             onClick={onLinkClick}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm',
+                'flex items-center gap-3 px-3 py-2 rounded-xl text-sm',
                 'transition-colors duration-150 cursor-pointer w-full',
                 isActive
-                  ? 'bg-mint-50 text-mint-700 font-medium dark:bg-mint-900/20 dark:text-mint-400'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100'
+                  ? 'bg-mint-50 text-mint-700 font-medium dark:bg-mint-900/20 dark:text-mint-300'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100'
               )
             }
           >
@@ -140,11 +137,6 @@ export function SidebarContent({ onLinkClick }: SidebarContentProps) {
           </NavLink>
         ))}
       </nav>
-
-      {/* 3 — Streak badge */}
-      <div className="pt-2">
-        <StreakWidget compact />
-      </div>
 
       {/* 4 — User area */}
       <div className="p-4 border-t border-gray-100 dark:border-gray-800 shrink-0">

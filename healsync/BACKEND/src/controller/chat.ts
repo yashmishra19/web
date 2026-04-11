@@ -9,12 +9,17 @@ const getModel      = () => process.env.GEMINI_MODEL || 'gemini-2.5-flash'
 const getDoctorPhone = () => process.env.EMERGENCY_DOCTOR_PHONE || '+918856853522'
 const getDoctorName  = () => process.env.EMERGENCY_DOCTOR_NAME  || 'Dr Sharan'
 
-// ─── Gemini ───────────────────────────────────────────────────────────────────
-async function callGemini(contents: any[], systemText: string): Promise<string> {
-  const apiKey = getApiKey()
-  if (!apiKey) throw new Error('AI_CHATBOT key is not configured in .env')
+// ─── Gemini — tries multiple models in sequence ───────────────────────────────
+const MODEL_FALLBACKS = [
+  'gemini-3.0-flash',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-2.0-flash-001',
+]
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${getModel()}:generateContent?key=${apiKey}`
+async function callGeminiWithModel(model: string, contents: any[], systemText: string, apiKey: string): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`
 
   const body = {
     contents: contents.map(c => ({
@@ -32,12 +37,51 @@ async function callGemini(contents: any[], systemText: string): Promise<string> 
   })
 
   const data = await response.json() as any
+
+  if (response.status === 429) throw new Error('QUOTA_EXCEEDED')
+  if (response.status === 403) throw new Error('FORBIDDEN')
+  if (response.status === 404) throw new Error('MODEL_NOT_FOUND')
+
   if (!response.ok) {
     const errMsg = data.error?.message || response.statusText
-    throw new Error(`Gemini API error: ${errMsg}`)
+    throw new Error(`Gemini error: ${errMsg}`)
   }
 
   return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not read the AI response.'
+}
+
+async function callGemini(contents: any[], systemText: string): Promise<string> {
+  const apiKey = getApiKey()
+  if (!apiKey) throw new Error('AI_CHATBOT key is not configured in .env')
+
+  // Try env model first, then fallbacks
+  const modelsToTry = [getModel(), ...MODEL_FALLBACKS.filter(m => m !== getModel())]
+
+  let lastError = ''
+  for (const model of modelsToTry) {
+    try {
+      console.log(`[Gemini] Trying model: ${model}`)
+      const result = await callGeminiWithModel(model, contents, systemText, apiKey)
+      console.log(`[Gemini] ✅ Success with model: ${model}`)
+      return result
+    } catch (err: any) {
+      lastError = err.message
+      if (err.message === 'QUOTA_EXCEEDED') {
+        console.warn(`[Gemini] ⚠️  Quota exceeded for ${model}, trying next...`)
+        continue
+      }
+      if (err.message === 'MODEL_NOT_FOUND') {
+        console.warn(`[Gemini] ⚠️  Model not found: ${model}, trying next...`)
+        continue
+      }
+      // Non-quota error — don't retry
+      throw err
+    }
+  }
+
+  // All models exhausted
+  console.error('[Gemini] ❌ All models quota-exhausted or unavailable')
+  throw new Error('QUOTA_ALL_EXHAUSTED')
 }
 
 // ─── Emergency SMS via Twilio (server-side, fully automatic) ─────────────────
@@ -228,8 +272,12 @@ export const handleChat = async (req: AuthRequest, res: Response, next: NextFunc
     extractKeyPoints(userId, message)
 
     res.json({ data: aiMessage, emergencyDispatched })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat controller error:', error)
+    if (error.message === 'QUOTA_ALL_EXHAUSTED') {
+      res.status(503).json({ error: 'AI quota exceeded', message: 'The Gemini API free-tier quota has been exhausted for today. It resets every 24 hours. Please try again later.' })
+      return
+    }
     next(error)
   }
 }
@@ -257,8 +305,12 @@ export const getChatHistory = async (req: AuthRequest, res: Response, next: Next
     }
 
     res.status(200).json({ data: history })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch history:', error)
+    if (error.message === 'QUOTA_ALL_EXHAUSTED') {
+      res.status(503).json({ error: 'AI quota exceeded', message: 'Gemini API quota exhausted for today. Please try again later.' })
+      return
+    }
     next(error)
   }
 }

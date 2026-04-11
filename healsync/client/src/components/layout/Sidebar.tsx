@@ -35,6 +35,7 @@ const navItems: NavItem[] = [
   { label: 'Journal',    icon: BookOpen,        href: '/journal'   },
   { label: 'Breathing',  icon: Wind,            href: '/breathing' },
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
+  { label: 'Vitals',     icon: Heart,           href: '/vitals'    },
   { label: 'Mood History', icon: Calendar,  href: '/mood-history' },
   { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
   { label: 'AI Assistant', icon: MessageCircle, href: '/chat', badge: 'Beta' },

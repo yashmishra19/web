@@ -6,6 +6,7 @@ import type {
   JournalEntry,
   DashboardSummary,
   AnalyticsData,
+  VitalsReading,
 } from '@shared/types';
 
 // ---------------------------------------------------------------------------
@@ -242,3 +243,52 @@ export const MOCK_ANALYTICS: AnalyticsData = {
     value: c.score,
   })),
 };
+
+// ---------------------------------------------------------------------------
+// Vitals Readings
+// ---------------------------------------------------------------------------
+
+export const MOCK_VITALS_READINGS: VitalsReading[] = [
+  {
+    id: 'v1',
+    userId: 'mock-user-1',
+    heartRate: 74,
+    systolicBP: 118,
+    diastolicBP: 76,
+    spO2: 98,
+    steps: 6842,
+    caloriesBurned: 312,
+    bodyTemperature: 36.6,
+    source: 'manual',
+    recordedAt: generateDateString(1),
+    createdAt: generateDateString(1),
+  },
+  {
+    id: 'v2',
+    userId: 'mock-user-1',
+    heartRate: 82,
+    systolicBP: 125,
+    diastolicBP: 82,
+    spO2: 97,
+    steps: 4210,
+    caloriesBurned: 198,
+    bodyTemperature: 36.8,
+    source: 'simulated',
+    recordedAt: generateDateString(2),
+    createdAt: generateDateString(2),
+  },
+  {
+    id: 'v3',
+    userId: 'mock-user-1',
+    heartRate: 68,
+    systolicBP: 115,
+    diastolicBP: 74,
+    spO2: 99,
+    steps: 9156,
+    caloriesBurned: 445,
+    bodyTemperature: 36.5,
+    source: 'simulated',
+    recordedAt: generateDateString(3),
+    createdAt: generateDateString(3),
+  },
+]

@@ -434,6 +434,15 @@ export default function DashboardPage() {
           </div>
 
           <div
+            className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-2xl p-4 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+            onClick={() => navigate('/vitals')}
+          >
+            <Heart className="w-6 h-6 text-red-500 mb-2" />
+            <div className="text-sm font-medium text-red-800 dark:text-red-300">Vitals</div>
+            <div className="text-xs text-red-600/70 mt-0.5">Track health metrics</div>
+          </div>
+
+          <div
             className="bg-gradient-to-br from-mint-50 to-calm-50 dark:from-mint-900/20 dark:to-calm-900/20 border border-mint-100 dark:border-mint-800 rounded-2xl p-4 cursor-pointer hover:shadow-card-hover transition-all"
             onClick={() => navigate('/chat')}
           >

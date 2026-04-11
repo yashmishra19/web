@@ -20,6 +20,7 @@ import NotFoundPage   from '@/pages/NotFoundPage';
 import MoodHistoryPage from '@/pages/MoodHistoryPage';
 import SelfCarePage   from '@/pages/SelfCarePage';
 import LandingPage    from '@/pages/LandingPage';
+import VitalsPage     from '@/pages/VitalsPage';
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
                   <Route path="/settings"   element={<SettingsPage />} />
                   <Route path="/mood-history" element={<MoodHistoryPage />} />
                   <Route path="/self-care"    element={<SelfCarePage />} />
+                  <Route path="/vitals"       element={<VitalsPage />} />
                 </Route>
               </Route>
 

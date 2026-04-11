@@ -223,3 +223,54 @@ export interface ApiError {
   message: string;
   code?: string;
 }
+
+// ── Vitals ───────────────────────────────────────────
+
+export type VitalsSource = 'manual' | 'smartwatch' | 'simulated'
+
+export interface VitalsPayload {
+  heartRate?: number           // bpm (40–200)
+  systolicBP?: number          // mmHg (70–200)
+  diastolicBP?: number         // mmHg (40–130)
+  spO2?: number                // % (85–100)
+  steps?: number               // 0–50000
+  caloriesBurned?: number      // kcal (0–5000)
+  bodyTemperature?: number     // °C (35–42)
+  stressLevel?: number         // 1–5
+  sleepHours?: number          // 0–24
+  source: VitalsSource
+  recordedAt?: string          // ISO date string
+}
+
+export interface VitalsReading extends VitalsPayload {
+  id: string
+  userId: string
+  createdAt: string
+}
+
+export type WatchConnectionStatus =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'simulating'
+  | 'unsupported'
+
+export interface WatchDevice {
+  id: string
+  name: string
+  type: 'fitbit' | 'apple_watch' | 'garmin' |
+        'samsung' | 'mi_band' | 'generic' | 'simulated'
+  batteryLevel?: number
+  lastSync?: string
+}
+
+export interface VitalsSuggestion {
+  id: string
+  category: 'heart' | 'blood_pressure' |
+            'oxygen' | 'activity' |
+            'temperature' | 'general'
+  severity: 'normal' | 'warning' | 'alert'
+  title: string
+  message: string
+  action?: string
+}

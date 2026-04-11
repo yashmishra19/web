@@ -8,9 +8,12 @@ export { default as Recommendation }
   from './Recommendation'
 export { default as JournalEntry }
   from './JournalEntry'
+export { default as VitalsReading }
+  from './VitalsReading'
 
 export type { IUser }           from './User'
 export type { IUserProfile }    from './UserProfile'
 export type { IDailyCheckIn }   from './DailyCheckIn'
 export type { IRecommendation } from './Recommendation'
 export type { IJournalEntry }   from './JournalEntry'
+export type { IVitalsReading }  from './VitalsReading'

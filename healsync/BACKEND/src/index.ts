@@ -15,6 +15,7 @@ import recommendationRoutes from './routes/recommendations'
 import journalRoutes        from './routes/journal'
 import dashboardRoutes      from './routes/dashboard'
 import analyticsRoutes      from './routes/analytics'
+import vitalsRoutes         from './routes/vitals'
 
 dotenv.config()
 
@@ -45,6 +46,7 @@ app.use('/api/recommendations', recommendationRoutes)
 app.use('/api/journal',         journalRoutes)
 app.use('/api/dashboard',       dashboardRoutes)
 app.use('/api/analytics',       analyticsRoutes)
+app.use('/api/vitals',          vitalsRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

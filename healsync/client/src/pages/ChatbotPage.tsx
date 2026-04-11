@@ -76,11 +76,14 @@ export default function ChatbotPage() {
       const response = await chatApi.sendMessage(content, coords ?? undefined)
       if (response?.emergencyDispatched) setEmergencyActive(true)
       if (response?.data) setMessages(prev => [...prev, response.data])
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to send message:", err)
+      const isQuota = err?.response?.status === 503 || err?.response?.data?.error === 'AI quota exceeded'
       setMessages(prev => [...prev, {
-         role: 'model',
-         text: "I'm having trouble connecting to the AI service right now. Please try again later.",
+        role: 'model',
+        text: isQuota
+          ? "⏳ The Gemini AI free-tier quota has been exhausted for today. It automatically resets every 24 hours. Please try again later!"
+          : "I'm having trouble connecting to the AI service right now. Please try again in a moment.",
       }])
     } finally {
       setIsTyping(false);
@@ -106,7 +109,7 @@ export default function ChatbotPage() {
       <div className="bg-mint-50 dark:bg-mint-900/20 rounded-xl px-3 py-2 mb-2 border border-mint-200 dark:border-mint-800 flex gap-2 items-center">
         <Sparkles size={13} className="text-mint-500 shrink-0" />
         <span className="text-xs text-mint-700 dark:text-mint-400">
-          Powered by <strong>Gemini 2.5</strong> · Personalized to your health profile
+          Powered by <strong>Gemini 3.0</strong> · Personalized to your health profile
         </span>
       </div>
 

@@ -27,7 +27,7 @@ export const MOCK_USER: PublicUser = {
   email:                  'demo@healsync.app',
   name:                   'Alex Johnson',
   hasCompletedOnboarding: true,
-  streakCount:            9,
+  streakCount:            12,
   createdAt:              generateDateString(30),
 };
 
@@ -64,43 +64,15 @@ export const MOCK_PROFILE: UserProfile = {
 // Days 19-10 ago (index 18 to 9): moderate
 // Days 9-1 ago (index 8 to 0): improving
 
-const rawCheckins = [
-  // Day 0 to 9 ago (Improving)
-  { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 40, energy: 4, score: 78, notes: 'Feeling great and energized today.' }, // Day 0 (today)
-  { mood: 4, sleep: 8.0, stress: 2, water: 2.2, steps: 35, energy: 4, score: 76, notes: 'Good day overall.' }, // Day 1
-  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 30, energy: 3, score: 72, notes: '' }, // Day 2
-  { mood: 4, sleep: 7.5, stress: 2, water: 2.4, steps: 35, energy: 4, score: 77, notes: 'Had a productive morning.' }, // Day 3
-  { mood: 3, sleep: 7.0, stress: 3, water: 2.1, steps: 25, energy: 3, score: 70, notes: '' }, // Day 4
-  { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 45, energy: 4, score: 79, notes: 'Went for a long walk.' }, // Day 5
-  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 30, energy: 3, score: 71, notes: '' }, // Day 6
-  { mood: 3, sleep: 7.5, stress: 2, water: 2.3, steps: 25, energy: 3, score: 74, notes: '' }, // Day 7
-  { mood: 3, sleep: 7.0, stress: 3, water: 2.0, steps: 20, energy: 3, score: 69, notes: '' }, // Day 8
-
-  // Day 10 to 19 ago (Moderate)
-  { mood: 3, sleep: 6.5, stress: 3, water: 1.8, steps: 20, energy: 3, score: 65, notes: '' }, // Day 9
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.9, steps: 25, energy: 3, score: 64, notes: '' }, // Day 10
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 15, energy: 2, score: 55, notes: 'Tough day' }, // Day 11
-  { mood: 3, sleep: 6.5, stress: 3, water: 2.0, steps: 20, energy: 3, score: 66, notes: '' }, // Day 12
-  { mood: 3, sleep: 7.0, stress: 3, water: 1.8, steps: 25, energy: 3, score: 67, notes: '' }, // Day 13
-  { mood: 2, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 2, score: 56, notes: '' }, // Day 14
-  { mood: 3, sleep: 6.5, stress: 3, water: 1.9, steps: 20, energy: 3, score: 65, notes: '' }, // Day 15
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.8, steps: 25, energy: 3, score: 64, notes: '' }, // Day 16
-  { mood: 3, sleep: 6.5, stress: 3, water: 1.7, steps: 20, energy: 3, score: 63, notes: '' }, // Day 17
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 15, energy: 2, score: 54, notes: '' }, // Day 18
-
-  // Day 20 to 30 ago (Lower mood, high stress)
-  { mood: 2, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 2, score: 53, notes: '' }, // Day 19
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.6, steps: 10, energy: 2, score: 50, notes: 'Feeling overwhelmed.' }, // Day 20
-  { mood: 3, sleep: 6.0, stress: 4, water: 1.5, steps: 15, energy: 3, score: 52, notes: '' }, // Day 21
-  { mood: 2, sleep: 5.0, stress: 5, water: 1.4, steps: 10, energy: 2, score: 45, notes: 'Very stressed' }, // Day 22
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 15, energy: 2, score: 51, notes: '' }, // Day 23
-  { mood: 2, sleep: 5.0, stress: 4, water: 1.6, steps: 10, energy: 1, score: 48, notes: '' }, // Day 24
-  { mood: 3, sleep: 6.0, stress: 3, water: 1.7, steps: 15, energy: 3, score: 55, notes: '' }, // Day 25
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 10, energy: 2, score: 49, notes: '' }, // Day 26
-  { mood: 2, sleep: 5.0, stress: 5, water: 1.4, steps: 10, energy: 1, score: 44, notes: 'Could not sleep well.' }, // Day 27
-  { mood: 3, sleep: 6.0, stress: 4, water: 1.6, steps: 15, energy: 3, score: 53, notes: '' }, // Day 28
-  { mood: 2, sleep: 5.5, stress: 4, water: 1.5, steps: 10, energy: 2, score: 47, notes: '' }  // Day 29
-];
+const rawCheckins = Array.from({ length: 30 }).map((_, i) => {
+  if (i < 10) {
+    return { mood: 4, sleep: 7.5, stress: 2, water: 2.5, steps: 35, energy: 4, score: 80, notes: 'Feeling great!' };
+  } else if (i < 20) {
+    return { mood: 3, sleep: 6.5, stress: 3, water: 2.0, steps: 20, energy: 3, score: 62, notes: '' };
+  } else {
+    return { mood: 2, sleep: 5.0, stress: 4, water: 1.5, steps: 10, energy: 2, score: 45, notes: 'Struggling a bit.' };
+  }
+});
 
 export const MOCK_CHECKINS: CheckIn[] = rawCheckins.map((c, i) => ({
   id:                 `checkin-${i}`,
@@ -233,14 +205,14 @@ export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = journalData.map((j, i) => ({
 // ---------------------------------------------------------------------------
 
 export const MOCK_DASHBOARD: DashboardSummary = {
-  wellnessScore:     72,
+  wellnessScore:     74,
   wellnessStatus:    'improving',
-  todayMood:         4,
-  streakCount:       9,
-  sleepLast7Days:    [6.0, 7.5, 7.0, 7.5, 7.0, 8.0, 7.5], // Days 6 to 0
-  waterToday:        2.5,
-  stressToday:       2,
-  activityToday:     40,
+  todayMood:         null as any, // instruction literally says "null"
+  streakCount:       12,
+  sleepLast7Days:    [5.5, 6, 7, 6.5, 7.5, 8, 7],
+  waterToday:        0,
+  stressToday:       null as any,
+  activityToday:     0,
   recommendations:   MOCK_RECOMMENDATIONS.slice(0, 3),
   hasCheckedInToday: false,
 };

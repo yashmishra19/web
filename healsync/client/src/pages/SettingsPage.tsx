@@ -62,7 +62,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-8">
+    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-24 md:pb-6">
       <PageHeader
         title="Settings"
         subtitle="Manage your preferences and account"

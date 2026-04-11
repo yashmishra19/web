@@ -1,143 +1,126 @@
-# HealSync
+# HealSync 🌿
 
-> Personalized health recommendations + continuous mental wellbeing support.
+> Personalized health recommendations +
+> continuous mental wellbeing support.
+> Built for Hackathon 2026.
 
-## Team structure
+## Quick Start
 
-| Role | Phases |
-|------|--------|
-| BE1 — Backend Dev 1 | Auth APIs, recommendation engine, seed data, deploy |
-| BE2 — Backend Dev 2 | MongoDB models, check-in APIs, analytics APIs, safety logic |
-| FE1 — Frontend Dev 1 | Auth pages, dashboard layout, charts, dark mode |
-| FE2 — Frontend Dev 2 | Design system, onboarding, check-in UI, breathing, chatbot UI |
+### Frontend only (works without backend)
+  cd client
+  npm install
+  npm run dev
+  Open: http://localhost:5173
+  Demo: demo@healsync.app / demo1234
 
-## Prerequisites
+### Full stack
+  Terminal 1 (backend):
+    cd BACKEND
+    npm install
+    copy .env.example .env
+    (fill MONGODB_URI and JWT_SECRET in .env)
+    npm run seed
+    npm run dev
 
-- Node.js v20+
-- A free MongoDB Atlas cluster (https://cloud.mongodb.com)
+  Terminal 2 (frontend):
+    cd client
+    npm install
+    npm run dev
 
-## Setup
+## Environment Setup
 
-### 1. Clone and install
+BACKEND/.env:
+  PORT=3000
+  NODE_ENV=development
+  MONGODB_URI=mongodb://localhost:27017/healsync
+  JWT_SECRET=any_long_random_string_here
+  JWT_EXPIRES_IN=7d
+  CLIENT_URL=http://localhost:5173
 
-```bash
-git clone <repo-url>
-cd healsync
-npm run install:all
-```
+client/.env:
+  VITE_API_URL=/api
 
-### 2. Configure environment
+## Tech Stack
+  Frontend:  React + TypeScript + Vite + Tailwind CSS
+  Backend:   Node.js + Express + TypeScript
+  Database:  MongoDB + Mongoose
+  Auth:      JWT
+  Charts:    Recharts
+  Icons:     Lucide React
 
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-# Edit server/.env with your MongoDB URI and a JWT secret
-```
+## Features
+  Daily health check-ins with live wellness score
+  Personalized AI-powered recommendations
+  Guided breathing exercises (4 techniques)
+  Private journaling with mood tracking
+  Mood history calendar
+  Analytics and trend charts (4 types)
+  Dark mode support
+  Offline mode with mock data fallback
+  Streak tracking system
+  AI wellness chatbot (beta)
+  Self-care suggestions
+  Support resources and helplines
 
-### 3. Run in development
+## Team
+  BE1: Backend Dev 1
+  BE2: Backend Dev 2
+  FE1: Frontend Dev 1
+  FE2: Frontend Dev 2
 
-```bash
-npm run dev
-# Backend:  http://localhost:3000
-# Frontend: http://localhost:5173
-```
+## Demo Flow (5 minutes)
 
-### 4. Seed demo data (after Phase 17)
+Step 1 — Landing page (30 seconds)
+  Open http://localhost:5173
+  Point out: "No ads, data stays on device"
+  Point out: Connected/Offline indicator in topbar
+  Click "Get started free"
 
-```bash
-npm run seed
-```
+Step 2 — Onboarding (45 seconds)
+  Fill in 5 steps quickly
+  Show goal selection cards on step 4
+  Show summary card on step 5
+  Click "Complete setup"
 
-## API health check
+Step 3 — Dashboard (60 seconds)
+  Show wellness score ring animating
+  Show sleep chart with colored bars
+  Show recommendation cards
+  Show streak widget with weekly dots
+  Point out green "Connected" indicator
 
-```
-GET http://localhost:3000/api/health
-```
+Step 4 — Check-in (45 seconds)
+  Click "Log today's check-in"
+  Move sliders to show live score updating
+  Submit — show success screen with score
+  Show streak toast notification
 
-Expected response:
+Step 5 — Analytics (30 seconds)
+  Show 4 charts
+  Switch 7d to 30d — show more data
+  Point out clear upward wellness trend
 
-```json
-{ "status": "ok", "message": "HealSync API is running" }
-```
+Step 6 — Breathing (30 seconds)
+  Select 4-7-8 breathing
+  Click Start — show animated circle
+  Show phase changing with countdown
 
-## Folder structure
+Step 7 — Journal (20 seconds)
+  Click "New entry"
+  Show prompt chips
+  Select a mood emoji
 
-```
-healsync/
-├── package.json                          ← root, runs both servers via concurrently
-├── README.md                             ← setup instructions
-├── shared/
-│   └── types.ts                          ← ALL shared TypeScript interfaces
-├── server/
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── .env.example
-│   ├── .gitignore
-│   └── src/
-│       ├── index.ts                      ← Express app entry point
-│       └── config/
-│           └── db.ts                     ← MongoDB connection
-└── client/
-    ├── package.json
-    ├── vite.config.ts
-    ├── tsconfig.json
-    ├── tsconfig.node.json
-    ├── tailwind.config.js
-    ├── postcss.config.js
-    ├── index.html
-    ├── .env.example
-    ├── .gitignore
-    └── src/
-        ├── main.tsx
-        ├── App.tsx
-        ├── index.css
-        ├── context/
-        │   ├── AuthContext.tsx
-        │   └── ThemeContext.tsx
-        ├── api/
-        │   └── client.ts
-        ├── components/
-        │   ├── ProtectedRoute.tsx
-        │   └── ui/
-        │       ├── LoadingScreen.tsx
-        │       ├── Spinner.tsx
-        │       ├── Button.tsx
-        │       ├── Input.tsx
-        │       ├── Card.tsx
-        │       ├── Badge.tsx
-        │       └── DisclaimerBanner.tsx
-        └── pages/
-            ├── LoginPage.tsx
-            ├── SignupPage.tsx
-            ├── OnboardingPage.tsx
-            ├── DashboardPage.tsx
-            ├── CheckInPage.tsx
-            ├── JournalPage.tsx
-            ├── BreathingPage.tsx
-            ├── AnalyticsPage.tsx
-            ├── SettingsPage.tsx
-            └── NotFoundPage.tsx
-```
+Step 8 — AI Chat (20 seconds)
+  Ask "I feel stressed"
+  Show typing indicator
+  Show detailed response
 
-## Environment variables
-
-### `server/.env`
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Port the Express server listens on | `3000` |
-| `NODE_ENV` | Runtime environment | `development` |
-| `MONGODB_URI` | MongoDB Atlas connection string | `mongodb+srv://...` |
-| `JWT_SECRET` | Secret used to sign JWT tokens (keep private) | `your_super_secret_jwt_key_here` |
-| `JWT_EXPIRES_IN` | How long a JWT token remains valid | `7d` |
-| `CLIENT_URL` | Allowed CORS origin (your frontend URL) | `http://localhost:5173` |
-
-### `client/.env`
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Base URL for API requests | `/api` |
+Step 9 — Dark mode (10 seconds)
+  Click moon icon in topbar
+  Show entire app in dark mode
 
 ## Disclaimer
-
-HealSync is not a medical device and does not provide medical advice. It provides general wellness guidance only and is not a substitute for professional medical, psychiatric, or therapeutic care. If you are in distress, please contact a qualified healthcare provider or a crisis helpline.
+  HealSync is not a medical device and does
+  not provide medical advice. Always consult
+  a qualified healthcare professional for
+  medical concerns.

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useDashboard } from '../hooks/useDashboard';
-import { useStreak } from '../hooks/useStreak';
 import StreakWidget from '../components/StreakWidget';
 import ReminderCards from '../components/ReminderCards';
 import { MOCK_USER } from '../mock/data';
@@ -29,6 +29,7 @@ import {
 } from 'recharts';
 
 import {
+  Button,
   ProgressRing,
   StatCard,
   SkeletonCard,
@@ -38,10 +39,11 @@ import {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const { data, isLoading, error } = useDashboard();
-  const { streakData } = useStreak();
+  const { data, isLoading, error, refetch } = useDashboard();
 
   const user = authUser || MOCK_USER;
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   const currentHour = new Date().getHours();
   let timeOfDay = 'evening';
@@ -49,7 +51,7 @@ export default function DashboardPage() {
   else if (currentHour >= 12 && currentHour < 17) timeOfDay = 'afternoon';
 
   const hasCheckedInToday = data?.hasCheckedInToday ?? false;
-  const streakCount = streakData.currentStreak;
+  const streakCount = data?.streakCount ?? 0;
 
   const score = data?.wellnessScore || 0;
   let scoreColor = '#ef4444';
@@ -123,13 +125,19 @@ export default function DashboardPage() {
         <AlertCircle size={32} className="text-red-400 mx-auto mb-3" />
         <div className="text-sm font-medium text-red-700">Something went wrong</div>
         <div className="text-xs text-red-500 mb-4">{error}</div>
-        <button className="btn-secondary" onClick={() => window.location.reload()}>Try again</button>
+        <Button
+          variant="secondary"
+          onClick={refetch}
+          size="sm"
+        >
+          Try again
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 page-enter pb-10">
+    <div className="space-y-6 page-enter pb-24 md:pb-6">
       {/* SECTION 1 — Welcome Header */}
       <div className="bg-gradient-to-r from-mint-500 to-mint-600 dark:from-mint-700 dark:to-mint-800 rounded-2xl p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -229,8 +237,10 @@ export default function DashboardPage() {
                     contentStyle={{
                       borderRadius: '12px',
                       border: 'none',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                      fontSize: '12px'
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      fontSize: '12px',
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      color: isDark ? '#f9fafb' : '#111827',
                     }}
                     cursor={{ fill: 'transparent' }}
                   />

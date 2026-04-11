@@ -31,6 +31,7 @@ export default function CheckInPage() {
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [savedScore, setSavedScore] = useState(0);
 
   const [mood, setMood] = useState<number>(3);
   const [stress, setStress] = useState<number>(3);
@@ -41,40 +42,55 @@ export default function CheckInPage() {
   const [notes, setNotes] = useState<string>('');
 
   useEffect(() => {
-    hasCheckedInToday().then(has => {
-      if (has) setAlreadyCheckedIn(true);
-    });
-  }, [hasCheckedInToday]);
+    const checkToday = async () => {
+      const checked = await hasCheckedInToday()
+      setAlreadyCheckedIn(checked)
+    }
+    checkToday()
+  }, [])
 
   const liveScore = computeWellnessScore({
     mood, stress, sleepHours, waterIntakeLiters, stepsOrMinutes, energyLevel, notes
   });
 
-  const handleSubmit = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      saveCheckIn({
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true)
+
+      const result = await saveCheckIn({
         mood,
         stress,
         sleepHours,
         waterIntakeLiters,
         stepsOrMinutes,
         energyLevel,
-        notes
-      });
-      
-      const updated = recordCheckIn();
-      if (updated && updated.currentStreak > 1 && showToast) {
+        notes,
+      })
+
+      setSavedScore(result.wellnessScore)
+      setIsSubmitted(true)
+
+      const streakResult = recordCheckIn()
+      if (
+        streakResult &&
+        streakResult.currentStreak > 1
+      ) {
         showToast(
-          `🔥 ${updated.currentStreak} day streak! Keep it up!`,
-          'success'
-        );
+          `🔥 ${streakResult.currentStreak} day streak!`,
+          'success',
+          5000
+        )
       }
 
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 700);
-  };
+    } catch (err: any) {
+      showToast(
+        'Could not save check-in. Please try again.',
+        'error'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   if (alreadyCheckedIn) {
     return (
@@ -105,7 +121,7 @@ export default function CheckInPage() {
         <div className="bg-mint-50 dark:bg-mint-900/20 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 mb-1">Your wellness score today</div>
           <div className="text-3xl font-medium text-mint-600">
-            {liveScore} <span className="text-sm text-gray-400">/ 100</span>
+            {savedScore} <span className="text-sm text-gray-400">/ 100</span>
           </div>
         </div>
 
@@ -138,7 +154,7 @@ export default function CheckInPage() {
     '#ef4444';
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5 page-enter pb-10 mt-6">
+    <div className="max-w-2xl mx-auto space-y-5 page-enter pb-24 md:pb-6 mt-6">
       <div>
         <PageHeader
           title="Daily Check-In"

@@ -14,6 +14,8 @@ import {
 import StreakWidget from '../StreakWidget';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useBackend } from '../../context/BackendContext';
+import { authApi } from '../../api';
 import { cn } from '@/lib/utils';
 
 // ---------------------------------------------------------------------------
@@ -77,10 +79,18 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ onLinkClick }: SidebarContentProps) {
-  const { user, logout } = useAuth();
-  const navigate         = useNavigate();
+  const { user, logout }   = useAuth();
+  const { isOnline }       = useBackend();
+  const navigate           = useNavigate();
 
-  function handleLogout() {
+  async function handleLogout() {
+    if (isOnline) {
+      try {
+        await authApi.logout();
+      } catch {
+        // silent — clear local state anyway
+      }
+    }
     logout();
     onLinkClick?.();
     navigate('/login');

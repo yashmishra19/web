@@ -88,7 +88,7 @@ export default function JournalPage() {
   }
 
   return (
-    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-10 mt-6 px-1">
+    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-24 md:pb-6 mt-6 px-1">
       <PageHeader
         title="Journal"
         subtitle="A private space to reflect on your thoughts and feelings"

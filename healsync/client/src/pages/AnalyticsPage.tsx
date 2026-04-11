@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { useTheme } from '../context/ThemeContext';
 import {
   BarChart, Bar, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -33,6 +34,8 @@ function getTrend(points: TimeSeriesPoint[]): 'up' | 'down' | 'neutral' {
 export default function AnalyticsPage() {
   const [range, setRange] = useState<Range>('14d');
   const { data, isLoading, error } = useAnalytics(range);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   const ranges: { value: Range; label: string }[] = [
     { value: '7d', label: '7 days' },
@@ -72,7 +75,7 @@ export default function AnalyticsPage() {
       <div className="card mt-12 max-w-sm mx-auto border-red-100 bg-red-50 dark:bg-red-900/20 text-center py-8">
         <AlertCircle size={32} className="text-red-400 mx-auto mb-3" />
         <div className="text-sm font-medium text-red-700">Something went wrong</div>
-        <div className="text-xs text-red-500 mb-4">{error.message || 'Unknown error'}</div>
+        <div className="text-xs text-red-500 mb-4">{error}</div>
         <Button variant="secondary" onClick={() => window.location.reload()}>Try again</Button>
       </div>
     );
@@ -80,7 +83,7 @@ export default function AnalyticsPage() {
 
   if (!isLoading && !data) {
     return (
-      <div className="space-y-6 page-enter pb-10 mt-6 max-w-4xl mx-auto">
+      <div className="space-y-6 page-enter pb-24 md:pb-6 mt-6 max-w-4xl mx-auto">
         <PageHeader title="Analytics" subtitle="Track your health and wellbeing trends over time" />
         <EmptyState title="No analytics data" description="Start logging check-ins to see your trends over time." />
       </div>
@@ -88,7 +91,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="space-y-6 page-enter pb-10 mt-6 max-w-4xl mx-auto">
+    <div className="space-y-6 page-enter pb-24 md:pb-6 mt-6 max-w-4xl mx-auto">
       <PageHeader
         title="Analytics"
         subtitle="Track your health and wellbeing trends over time"
@@ -176,9 +179,14 @@ export default function AnalyticsPage() {
                   <YAxis domain={[1,5]} ticks={[1,2,3,4,5]} hide/>
                   <Tooltip
                     formatter={(v: any) => [v, 'Mood']}
-                    contentStyle={{borderRadius:'12px',border:'none',
-                                   boxShadow:'0 4px 12px rgba(0,0,0,0.1)',
-                                   fontSize:'12px'}}
+                    contentStyle={{
+                      borderRadius: '12px',
+                      border: 'none',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      fontSize: '12px',
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      color: isDark ? '#f9fafb' : '#111827',
+                    }}
                   />
                   <ReferenceLine y={3} stroke="#94a3b8" strokeDasharray="4 4"/>
                   <Area type="monotone" dataKey="value"
@@ -217,9 +225,14 @@ export default function AnalyticsPage() {
                   <YAxis domain={[0,12]} hide/>
                   <Tooltip
                     formatter={(v: any) => [`${v} hrs`, 'Sleep']}
-                    contentStyle={{borderRadius:'12px',border:'none',
-                                   boxShadow:'0 4px 12px rgba(0,0,0,0.1)',
-                                   fontSize:'12px'}}
+                    contentStyle={{
+                      borderRadius: '12px',
+                      border: 'none',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      fontSize: '12px',
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      color: isDark ? '#f9fafb' : '#111827',
+                    }}
                   />
                   <ReferenceLine y={8} stroke="#94a3b8" strokeDasharray="4 4"
                                  label={{value:'Goal',position:'right',

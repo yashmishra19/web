@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -36,7 +36,7 @@ const TrendIcon = ({ trend }: { trend: TrendDir }) => {
   return <Minus size={12} />;
 };
 
-export default function StatCard({
+function StatCard({
   title,
   value,
   subtitle,
@@ -91,3 +91,5 @@ export default function StatCard({
     </div>
   );
 }
+
+export default React.memo(StatCard);

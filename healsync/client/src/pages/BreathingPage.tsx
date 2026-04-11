@@ -142,7 +142,7 @@ export default function BreathingPage() {
   const totalSeconds = selectedTechnique.phases.reduce((sum, p) => sum + p.duration, 0) * selectedTechnique.totalCycles;
 
   return (
-    <div className="space-y-6 page-enter max-w-2xl mx-auto pb-12">
+    <div className="space-y-6 page-enter max-w-2xl mx-auto pb-24 md:pb-6">
       <PageHeader
         title="Breathing Exercise"
         subtitle="Take a moment to breathe and reset"

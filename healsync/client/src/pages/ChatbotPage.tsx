@@ -158,7 +158,7 @@ you like to talk about today?`,
   };
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto page-enter pb-10 mt-6 px-1 safe-bottom" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div className="flex flex-col h-full max-w-2xl mx-auto page-enter pb-24 md:pb-6 mt-6 px-1 safe-bottom" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <PageHeader
         title="AI Wellness Assistant"
         subtitle="Powered by HealSync AI · Beta"

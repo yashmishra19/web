@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface ProgressRingProps {
   value:        number;          // 0–100
   size?:        number;
@@ -8,7 +10,7 @@ interface ProgressRingProps {
   sublabel?:    string;
 }
 
-export default function ProgressRing({
+function ProgressRing({
   value,
   size        = 80,
   strokeWidth = 7,
@@ -94,3 +96,5 @@ export default function ProgressRing({
     </svg>
   );
 }
+
+export default React.memo(ProgressRing);

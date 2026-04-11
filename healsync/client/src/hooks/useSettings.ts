@@ -33,24 +33,45 @@ export function useSettings() {
     }
   }, []);
 
-  const updateSettings = async (updated: Partial<ReminderSettings>) => {
-    setIsSaving(true);
-    await new Promise(r => setTimeout(r, 400));
-    const newSettings = { ...settings, ...updated };
-    setSettings(newSettings);
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
-    
+  useEffect(() => {
+    if (!isOnline) return
+    const syncFromBackend = async () => {
+      try {
+        await profileApi.getProfile()
+        // Profile doesn't have reminders — they are
+        // on the User model. Just use localStorage.
+        // Backend sync happens via updateSettings.
+      } catch {
+        // Silent — use localStorage settings
+      }
+    }
+    syncFromBackend()
+  }, [isOnline])
+
+  const updateSettings = async (
+    updated: Partial<ReminderSettings>
+  ) => {
+    setIsSaving(true)
+    const newSettings = { ...settings, ...updated }
+
+    // Always save to localStorage immediately
+    setSettings(newSettings)
+    localStorage.setItem(
+      SETTINGS_KEY, JSON.stringify(newSettings)
+    )
+
+    // Also save to backend when online
     if (isOnline) {
       try {
         await profileApi.updateReminders(newSettings)
       } catch {
-        // silent fail — localStorage already saved
+        // Silent fail — localStorage already updated
       }
     }
-    
-    setIsSaving(false);
-    return newSettings;
-  };
+
+    setIsSaving(false)
+    return newSettings
+  }
 
   const resetSettings = () => {
     setSettings(DEFAULT_SETTINGS);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useStreak } from '../hooks/useStreak';
 import { Card } from './ui';
 import { Flame, Trophy, Calendar } from 'lucide-react';
@@ -6,7 +7,7 @@ interface StreakWidgetProps {
   compact?: boolean;
 }
 
-export default function StreakWidget({ compact = false }: StreakWidgetProps) {
+function StreakWidget({ compact = false }: StreakWidgetProps) {
   const { streakData, getStreakMessage } = useStreak();
 
   if (compact) {
@@ -84,3 +85,5 @@ export default function StreakWidget({ compact = false }: StreakWidgetProps) {
     </Card>
   );
 }
+
+export default React.memo(StreakWidget);

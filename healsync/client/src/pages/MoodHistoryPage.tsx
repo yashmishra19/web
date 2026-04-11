@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useCheckIn } from '../hooks/useCheckIn';
 import { MOCK_CHECKINS } from '../mock/data';
+import { useBackend } from '../context/BackendContext';
+import { checkInApi } from '../api';
 import { PageHeader, Card, Badge, EmptyState, SkeletonCard, DisclaimerBanner } from '../components/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -9,26 +10,33 @@ import type { CheckIn } from '../../../shared/types';
 export default function MoodHistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(() => new Date());
-  const { getStoredCheckIns } = useCheckIn();
+  const { isOnline } = useBackend();
   const navigate = useNavigate();
-
   const [checkins, setCheckins] = useState<CheckIn[]>([]);
 
   useEffect(() => {
-    const local = getStoredCheckIns();
-    
-    // We deduplicate by ID to prevent overlap, then sort.
-    const combinedMap = new Map<string, CheckIn>();
-    [...MOCK_CHECKINS, ...local].forEach(c => combinedMap.set(c.id, c));
-    const combined = Array.from(combinedMap.values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    
-    setCheckins(combined);
-    setTimeout(() => setIsLoading(false), 700);
-  }, [getStoredCheckIns]);
+    const load = async () => {
+      setIsLoading(true)
+      try {
+        if (isOnline) {
+          const data = await checkInApi.getAll(30)
+          setCheckins(data)
+        } else {
+          await new Promise(r => setTimeout(r, 700))
+          setCheckins(MOCK_CHECKINS)
+        }
+      } catch {
+        setCheckins(MOCK_CHECKINS)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    load()
+  }, [isOnline]);
 
   if (isLoading) {
     return (
-      <div className="space-y-4 max-w-2xl mx-auto page-enter pb-20">
+      <div className="space-y-4 max-w-2xl mx-auto page-enter pb-24 md:pb-6">
         <PageHeader title="Mood History" subtitle="See how your mood has changed over time" />
         <SkeletonCard />
         <SkeletonCard />
@@ -83,7 +91,7 @@ export default function MoodHistoryPage() {
   });
 
   return (
-    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-20">
+    <div className="space-y-5 page-enter max-w-2xl mx-auto pb-24 md:pb-6">
       <PageHeader title="Mood History" subtitle="See how your mood has changed over time" />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

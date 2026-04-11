@@ -96,7 +96,7 @@ export default function SelfCarePage() {
   if (!activeCategoryData) return null;
 
   return (
-    <div className="space-y-6 page-enter max-w-2xl mx-auto pb-20">
+    <div className="space-y-6 page-enter max-w-2xl mx-auto pb-24 md:pb-6">
       <PageHeader title="Self-Care" subtitle="Small actions that make a big difference" />
 
       <Card className="bg-gradient-to-r from-purple-50 to-mint-50 dark:from-purple-900/20 dark:to-mint-900/20 border border-purple-100 dark:border-purple-800">

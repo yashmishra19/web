@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password: string
   name: string
   hasCompletedOnboarding: boolean
+  phone?: string
   streakCount: number
   lastCheckInDate: Date | null
   role: 'user' | 'admin' | 'doctor'
@@ -66,6 +67,7 @@ const UserSchema = new Schema<IUser>({
     stretchEnabled:     { type: Boolean, default: false },
     stretchTime:        { type: String,  default: '15:00' },
   },
+  phone: { type: String, default: '' },
 }, { timestamps: true })
 
 UserSchema.methods.toPublicJSON = function(): PublicUser {

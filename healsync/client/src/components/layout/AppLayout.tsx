@@ -11,7 +11,8 @@ const titleMap: Record<string, string> = {
   '/journal':   'Journal',
   '/breathing': 'Breathing',
   '/analytics': 'Analytics',
-  '/chat':      'AI Chat',
+  '/chat':      'AI Assistant',
+  '/nearby':    'Nearby Facilities',
   '/settings':  'Settings',
   '/onboarding':'Onboarding',
 };
@@ -35,7 +36,7 @@ export default function AppLayout() {
         />
 
         {/* Scrollable page content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+        <main className="flex-1 overflow-y-auto p-3 md:p-4 pb-20 md:pb-4">
           <Outlet />
         </main>
       </div>

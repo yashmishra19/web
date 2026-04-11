@@ -79,6 +79,8 @@ export interface OnboardingPayload {
   workStudyHours: number;
   mainGoal: HealthGoal;
   existingConditions?: string[];
+  medications?: string[];
+  keyPoints?: string[];
 }
 
 export interface UserProfile extends OnboardingPayload {

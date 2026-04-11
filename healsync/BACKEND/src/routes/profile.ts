@@ -34,6 +34,8 @@ const onboardingSchema = z.object({
     'improve_fitness','better_nutrition','mental_wellness','general_health',
   ]),
   existingConditions: z.array(z.string()).optional(),
+  medications: z.array(z.string()).optional(),
+  keyPoints: z.array(z.string()).optional(),
 })
 
 // POST /api/profile/onboarding

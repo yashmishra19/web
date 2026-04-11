@@ -10,6 +10,7 @@ import {
   Calendar,
   Heart,
   MessageCircle,
+  MapPin,
 } from 'lucide-react';
 import StreakWidget from '../StreakWidget';
 import type { LucideIcon } from 'lucide-react';
@@ -38,8 +39,9 @@ const navItems: NavItem[] = [
   { label: 'Vitals',     icon: Heart,           href: '/vitals'    },
   { label: 'Mood History', icon: Calendar,  href: '/mood-history' },
   { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
-  { label: 'AI Assistant', icon: MessageCircle, href: '/chat', badge: 'Beta' },
-  { label: 'Settings',   icon: Settings,        href: '/settings'  },
+  { label: 'AI Assistant',    icon: MessageCircle, href: '/chat',   badge: 'AI'  },
+  { label: 'Nearby Facilities', icon: MapPin,       href: '/nearby', badge: 'New' },
+  { label: 'Settings',        icon: Settings,      href: '/settings'             },
 ];
 
 // ---------------------------------------------------------------------------

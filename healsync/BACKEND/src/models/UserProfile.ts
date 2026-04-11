@@ -18,6 +18,9 @@ export interface IUserProfile extends Document {
   mainGoal: 'lose_weight'|'gain_muscle'|'improve_sleep'|'reduce_stress'|
             'improve_fitness'|'better_nutrition'|'mental_wellness'|'general_health'
   existingConditions: string[]
+  medications: string[]
+  allergies: string[]
+  keyPoints: string[]
   createdAt: Date
   updatedAt: Date
 }
@@ -73,6 +76,9 @@ const UserProfileSchema = new Schema<IUserProfile>({
            'improve_fitness','better_nutrition','mental_wellness','general_health'],
   },
   existingConditions: { type: [String], default: [] },
+  medications: { type: [String], default: [] },
+  allergies: { type: [String], default: [] },
+  keyPoints: { type: [String], default: [] },
 }, { timestamps: true })
 
 export default model<IUserProfile>(

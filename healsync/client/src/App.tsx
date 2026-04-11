@@ -20,7 +20,8 @@ import NotFoundPage   from '@/pages/NotFoundPage';
 import MoodHistoryPage from '@/pages/MoodHistoryPage';
 import SelfCarePage   from '@/pages/SelfCarePage';
 import LandingPage    from '@/pages/LandingPage';
-import VitalsPage     from '@/pages/VitalsPage';
+import VitalsPage       from '@/pages/VitalsPage';
+import NearbyFacilitiesPage from '@/pages/NearbyFacilitiesPage';
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
                   <Route path="/mood-history" element={<MoodHistoryPage />} />
                   <Route path="/self-care"    element={<SelfCarePage />} />
                   <Route path="/vitals"       element={<VitalsPage />} />
+                  <Route path="/nearby"       element={<NearbyFacilitiesPage />} />
                 </Route>
               </Route>
 

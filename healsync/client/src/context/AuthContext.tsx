@@ -1,147 +1,170 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import type { PublicUser, OnboardingPayload, UserProfile } from '@shared/types';
-import { authApi } from '../api';
-import api from '../api/client';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react'
+import type {
+  PublicUser,
+  OnboardingPayload,
+  UserProfile,
+} from '../../../shared/types'
 
-const TOKEN_KEY   = 'healsync_token';
-const USER_KEY    = 'healsync_user';
-const PROFILE_KEY = 'healsync_profile';
+const TOKEN_KEY   = 'healsync_token'
+const USER_KEY    = 'healsync_user'
+const PROFILE_KEY = 'healsync_profile'
+const REFRESH_KEY = 'healsync_refresh_token'
 
 interface AuthContextValue {
-  user:               PublicUser | null;
-  token:              string | null;
-  isLoading:          boolean;
-  login:              (token: string, user: PublicUser) => void;
-  logout:             () => void;
-  updateUser:         (user: PublicUser) => void;
-  completeOnboarding: (profile: OnboardingPayload) => void;
-  refreshUser:        () => Promise<void>;
-  profile:            UserProfile | null;
-  setProfileData:     (profile: UserProfile) => void;
+  user:                 PublicUser | null
+  token:                string | null
+  profile:              UserProfile | null
+  isLoading:            boolean
+  login:                (
+    token: string,
+    user: PublicUser,
+    refreshToken?: string
+  ) => void
+  logout:               () => void
+  updateUser:           (user: PublicUser) => void
+  completeOnboarding:   (
+    payload: OnboardingPayload
+  ) => void
+  setProfileData:       (
+    profile: UserProfile
+  ) => void
+  refreshUser:          () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+const AuthContext =
+  createContext<AuthContextValue | null>(null)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user,      setUser]      = useState<PublicUser | null>(null);
-  const [token,     setToken]     = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [profile,   setProfile]   = useState<UserProfile | null>(null);
+export function AuthProvider(
+  { children }: { children: ReactNode }
+) {
+  const [user, setUser] =
+    useState<PublicUser | null>(null)
+  const [token, setToken] =
+    useState<string | null>(null)
+  const [profile, setProfile] =
+    useState<UserProfile | null>(null)
 
-  // Rehydrate from localStorage on mount
+  // CRITICAL: starts true, set false after
+  // localStorage read. This prevents flicker.
+  const [isLoading, setIsLoading] =
+    useState(true)
+
+  // Read from localStorage ONCE on mount
+  // Empty deps [] = runs exactly once
   useEffect(() => {
     try {
-      const storedToken   = localStorage.getItem(TOKEN_KEY);
-      const storedUser    = localStorage.getItem(USER_KEY);
-      const storedProfile = localStorage.getItem(PROFILE_KEY);
-
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser) as PublicUser);
+      const t = localStorage.getItem(TOKEN_KEY)
+      const u = localStorage.getItem(USER_KEY)
+      const p = localStorage.getItem(PROFILE_KEY)
+      if (t && u) {
+        setToken(t)
+        setUser(JSON.parse(u))
       }
-      if (storedProfile) {
-        setProfile(JSON.parse(storedProfile) as UserProfile);
+      if (p) {
+        setProfile(JSON.parse(p))
       }
     } catch {
-      // Corrupted storage — clear it
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-      localStorage.removeItem(PROFILE_KEY);
+      localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(USER_KEY)
+      localStorage.removeItem(PROFILE_KEY)
     } finally {
-      setIsLoading(false);
+      // Always set false so app can render
+      setIsLoading(false)
     }
-  }, []);
+  }, []) // ← EMPTY ARRAY. DO NOT ADD DEPS HERE.
 
-  // Sync user data + profile from backend when token is present
-  useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (storedToken) {
-      refreshUser().catch(() => {});
-      fetchAndStoreProfile().catch(() => {});
+  const login = (
+    newToken: string,
+    newUser: PublicUser,
+    refreshToken?: string
+  ) => {
+    setToken(newToken)
+    setUser(newUser)
+    localStorage.setItem(TOKEN_KEY, newToken)
+    localStorage.setItem(
+      USER_KEY, JSON.stringify(newUser)
+    )
+    if (refreshToken) {
+      localStorage.setItem(REFRESH_KEY, refreshToken)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Re-fetch profile whenever token changes (login / re-auth)
-  useEffect(() => {
-    if (token && user) {
-      fetchAndStoreProfile();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  // ── Helpers ──────────────────────────────────────────────
-
-  const fetchAndStoreProfile = async () => {
-    try {
-      const res = await api.get('/profile/me');
-      const fetchedProfile = res.data?.data ?? res.data;
-      if (fetchedProfile) {
-        setProfile(fetchedProfile);
-        localStorage.setItem(PROFILE_KEY, JSON.stringify(fetchedProfile));
-      }
-    } catch {
-      // Silent — profile just stays as cached value
-    }
-  };
-
-  function login(newToken: string, newUser: PublicUser) {
-    setToken(newToken);
-    setUser(newUser);
-    localStorage.setItem(TOKEN_KEY, newToken);
-    localStorage.setItem(USER_KEY, JSON.stringify(newUser));
   }
 
-  function logout() {
-    setToken(null);
-    setUser(null);
-    setProfile(null);
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(PROFILE_KEY);
+  const logout = () => {
+    setToken(null)
+    setUser(null)
+    setProfile(null)
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
+    localStorage.removeItem(PROFILE_KEY)
+    localStorage.removeItem(REFRESH_KEY)
   }
 
-  function updateUser(updatedUser: PublicUser) {
-    setUser(updatedUser);
-    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+  const updateUser = (updated: PublicUser) => {
+    setUser(updated)
+    localStorage.setItem(
+      USER_KEY, JSON.stringify(updated)
+    )
   }
 
-  function completeOnboarding(payload: OnboardingPayload) {
-    // Build a local UserProfile from the payload so UI shows data immediately
-    const profileData: UserProfile = {
+  const setProfileData = (
+    newProfile: UserProfile
+  ) => {
+    setProfile(newProfile)
+    localStorage.setItem(
+      PROFILE_KEY, JSON.stringify(newProfile)
+    )
+  }
+
+  const completeOnboarding = (
+    payload: OnboardingPayload
+  ) => {
+    const profileData = {
       ...payload,
       id:        'local',
-      userId:    user?.id || 'mock-user-1',
+      userId:    user?.id || '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    } as UserProfile
 
-    setProfile(profileData);
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
+    setProfile(profileData)
+    localStorage.setItem(
+      PROFILE_KEY,
+      JSON.stringify(profileData)
+    )
 
-    // Mark onboarding complete on user object
     if (user) {
-      const updatedUser = { ...user, hasCompletedOnboarding: true };
-      setUser(updatedUser);
-      localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+      const updated = {
+        ...user,
+        hasCompletedOnboarding: true,
+      }
+      setUser(updated)
+      localStorage.setItem(
+        USER_KEY, JSON.stringify(updated)
+      )
     }
-
-    // Also try to fetch the canonical profile from backend in background
-    fetchAndStoreProfile().catch(() => {});
   }
 
-  const setProfileData = (newProfile: UserProfile) => {
-    setProfile(newProfile);
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(newProfile));
-  };
-
-  async function refreshUser() {
+  const refreshUser = async () => {
     try {
-      const updatedUser = await authApi.getMe();
-      if (updatedUser) updateUser(updatedUser);
+      const res = await fetch('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.data) {
+          updateUser(data.data)
+        }
+      }
     } catch {
-      // If token is invalid, log out silently
-      // (401 handler in api/client.ts also redirects)
+      // silent
     }
   }
 
@@ -149,24 +172,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider value={{
       user,
       token,
+      profile,
       isLoading,
       login,
       logout,
       updateUser,
       completeOnboarding,
-      refreshUser,
-      profile,
       setProfileData,
+      refreshUser,
     }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error('useAuth must be used within an <AuthProvider>');
-  }
-  return ctx;
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error(
+    'useAuth must be used inside AuthProvider'
+  )
+  return ctx
 }

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {
-  Music2, ChevronDown, ChevronUp,
-  ExternalLink, Headphones
+  ChevronDown, ChevronUp,
 } from 'lucide-react'
 
 interface Props {

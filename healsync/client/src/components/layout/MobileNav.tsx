@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   ClipboardCheck,
-  Heart,
   Activity,
   Settings,
   Pill,

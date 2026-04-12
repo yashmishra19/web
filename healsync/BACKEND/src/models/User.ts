@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, model } from 'mongoose'
-import type { PublicUser } from '../../../shared/types'
+import type { PublicUser } from '../types'
 
 export interface IUser extends Document {
   email: string

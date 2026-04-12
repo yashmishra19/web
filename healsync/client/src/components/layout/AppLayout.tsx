@@ -4,6 +4,7 @@ import Sidebar     from './Sidebar';
 import TopBar      from './TopBar';
 import MobileNav   from './MobileNav';
 import MobileDrawer from './MobileDrawer';
+import SOSButton from '../SOSButton';
 
 const titleMap: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -49,6 +50,8 @@ export default function AppLayout() {
         isOpen={isMobileDrawerOpen}
         onClose={() => setIsMobileDrawerOpen(false)}
       />
+
+      <SOSButton />
     </div>
   );
 }

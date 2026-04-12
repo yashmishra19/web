@@ -39,6 +39,8 @@ const SettingsPage    = lazy(() =>
   import('./pages/SettingsPage'))
 const VitalsPage      = lazy(() =>
   import('./pages/VitalsPage'))
+const MedicationPage  = lazy(() =>
+  import('./pages/MedicationPage'))
 const SelfCarePage    = lazy(() =>
   import('./pages/SelfCarePage'))
 const ChatbotPage     = lazy(() =>
@@ -114,6 +116,9 @@ export default function App() {
                       <Route path="/vitals"
                         element={
                           <VitalsPage />} />
+                      <Route path="/medications"
+                        element={
+                          <MedicationPage />} />
                       <Route path="/self-care"
                         element={
                           <SelfCarePage />} />

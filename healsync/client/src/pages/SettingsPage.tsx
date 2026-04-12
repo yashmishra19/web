@@ -10,9 +10,10 @@ import {
   Sun, Moon, Monitor, Bell,
   LogOut, Download, Trash2, ChevronRight,
   Edit3, Droplets, Activity,
-  Check, ClipboardCheck,
+  Check, ClipboardCheck, AlertTriangle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 // ── Formatters ────────────────────────────────────────────
 
@@ -63,6 +64,32 @@ function formatDiet(d: string): string {
 
 export default function SettingsPage() {
   const { settings, isSaving, updateSettings, resetSettings } = useSettings();
+  
+  const [emergencyContact, setEmergencyContact] = useState({
+    name:         '',
+    phone:        '',
+    whatsapp:     '',
+    relationship: 'family',
+  });
+  const [ecSaved, setEcSaved] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('healsync_emergency_contact');
+      if (raw) setEmergencyContact(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  const saveEmergencyContact = () => {
+    localStorage.setItem(
+      'healsync_emergency_contact',
+      JSON.stringify(emergencyContact)
+    );
+    setEcSaved(true);
+    showToast('🆘 Emergency contact saved', 'success');
+    setTimeout(() => setEcSaved(false), 3000);
+  };
+
   const { user, logout, profile } = useAuth();
   const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -328,6 +355,92 @@ export default function SettingsPage() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* EMERGENCY CONTACT SECTION */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-100 dark:border-red-900/30 p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <AlertTriangle size={14} className="text-red-500" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
+              Emergency contact
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              Notified if you trigger SOS
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1">
+              Contact name
+            </label>
+            <input
+              type="text"
+              value={emergencyContact.name}
+              onChange={e => setEmergencyContact(p => ({ ...p, name: e.target.value }))}
+              placeholder="e.g. Mom, John"
+              className="input w-full text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1">
+              WhatsApp number (with country code)
+            </label>
+            <input
+              type="tel"
+              value={emergencyContact.whatsapp}
+              onChange={e => setEmergencyContact(p => ({ ...p, whatsapp: e.target.value }))}
+              placeholder="+91 9876543210"
+              className="input w-full text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1">
+              Phone number
+            </label>
+            <input
+              type="tel"
+              value={emergencyContact.phone}
+              onChange={e => setEmergencyContact(p => ({ ...p, phone: e.target.value }))}
+              placeholder="+91 9876543210"
+              className="input w-full text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1">
+              Relationship
+            </label>
+            <select
+              value={emergencyContact.relationship}
+              onChange={e => setEmergencyContact(p => ({ ...p, relationship: e.target.value }))}
+              className="input w-full text-sm"
+            >
+              <option value="family">Family</option>
+              <option value="spouse">Spouse / Partner</option>
+              <option value="friend">Friend</option>
+              <option value="doctor">Doctor</option>
+              <option value="colleague">Colleague</option>
+            </select>
+          </div>
+
+          <button
+            onClick={saveEmergencyContact}
+            disabled={
+              !emergencyContact.name.trim() ||
+              (!emergencyContact.whatsapp.trim() && !emergencyContact.phone.trim())
+            }
+            className="btn-primary w-full h-10 text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {ecSaved ? '✅ Saved' : 'Save emergency contact'}
+          </button>
         </div>
       </div>
 

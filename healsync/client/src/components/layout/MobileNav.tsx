@@ -3,7 +3,9 @@ import {
   LayoutDashboard,
   ClipboardCheck,
   Heart,
+  Activity,
   Settings,
+  Pill,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,8 +19,8 @@ interface MobileNavItem {
 const navItems: MobileNavItem[] = [
   { label: 'Home',      icon: LayoutDashboard, href: '/dashboard' },
   { label: 'Check-In',  icon: ClipboardCheck,  href: '/checkin'   },
-  { label: 'Vitals',    icon: Heart,           href: '/vitals'    },
-  { label: 'Self-Care', icon: Heart,           href: '/self-care' },
+  { label: 'Vitals',    icon: Activity,        href: '/vitals'    },
+  { label: 'Medications', icon: Pill,          href: '/medications' },
   { label: 'Settings',  icon: Settings,        href: '/settings'  },
 ];
 

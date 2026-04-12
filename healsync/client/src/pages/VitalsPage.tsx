@@ -15,7 +15,7 @@ import {
   Bluetooth, BluetoothOff, BluetoothSearching,
   RefreshCw, Save,
   AlertTriangle, CheckCircle, Info, Zap,
-  Watch, Plus, ChevronDown, ChevronUp,
+  Watch, Plus, ChevronDown, ChevronUp, Footprints
 } from 'lucide-react'
 import type {
   VitalsPayload,
@@ -364,7 +364,7 @@ export default function VitalsPage() {
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center">
-                  <Activity className="text-mint-500 mb-2" size={24} />
+                  <Footprints className="text-mint-500 mb-2" size={24} />
                   <p className="text-xs text-gray-400 mb-1">Steps</p>
                   <p className="text-2xl font-medium text-gray-800 dark:text-gray-100">{liveVitals.steps?.toLocaleString()}</p>
                 </div>
@@ -587,7 +587,7 @@ export default function VitalsPage() {
                       )}
                       {reading.steps && (
                         <div className="text-xs bg-gray-50 dark:bg-gray-800 px-2 py-1 flex items-center gap-1 rounded-lg border border-gray-100 dark:border-gray-700 shrink-0">
-                          <Activity size={10} className="text-mint-500 hidden sm:inline" /> Steps: {reading.steps}
+                          <Footprints size={10} className="text-mint-500 hidden sm:inline" /> Steps: {reading.steps}
                         </div>
                       )}
                     </div>

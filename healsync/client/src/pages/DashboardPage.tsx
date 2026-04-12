@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useBackend } from '../context/BackendContext'
 import { useTheme } from '../context/ThemeContext'
+import MoodMusic from '../components/MoodMusic'
 import { MOCK_DASHBOARD, MOCK_VITALS_READINGS }
   from '../mock/data'
 import {
@@ -12,7 +13,7 @@ import {
 import {
   Heart, Droplets, Moon, Smile, Zap,
   Activity, Target, Plus, Wind,
-  Apple, Thermometer,
+  Apple, Thermometer, Footprints,
   ChevronRight, Watch, X, Check,
 } from 'lucide-react'
 
@@ -306,6 +307,28 @@ export default function DashboardPage() {
     })
   )
 
+  // Load missed meds count
+  let missedMeds = 0;
+  try {
+    const rawMeds = localStorage.getItem('healsync_medications');
+    const rawLogs = localStorage.getItem('healsync_dose_logs');
+    if (rawMeds && rawLogs) {
+      const meds = JSON.parse(rawMeds);
+      const logs = JSON.parse(rawLogs);
+      const today = new Date().toISOString().split('T')[0];
+      const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+      meds.filter((m: any) => m.active).forEach((med: any) => {
+        med.times.forEach((time: string) => {
+          const [h, m] = time.split(':').map(Number);
+          if (h * 60 + m < nowMin) {
+            const taken = logs.some((l: any) => l.medicationId === med.id && l.date === today && l.scheduledTime === time && l.taken);
+            if (!taken) missedMeds++;
+          }
+        });
+      });
+    }
+  } catch {}
+
   const recStyle: Record<string, any> = {
     sleep:        { icon: Moon,     bg: 'bg-indigo-100 dark:bg-indigo-900/40', color: 'text-indigo-500 dark:text-indigo-400' },
     hydration:    { icon: Droplets, bg: 'bg-blue-100 dark:bg-blue-900/40',    color: 'text-blue-500 dark:text-blue-400' },
@@ -387,6 +410,18 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {missedMeds > 0 && (
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800 p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-red-700 dark:text-red-400 font-medium">
+            <span className="text-xl">💊</span>
+            You missed {missedMeds} dose{missedMeds !== 1 ? 's' : ''} today
+          </div>
+          <button onClick={() => navigate('/medications')} className="text-sm font-semibold text-red-700 dark:text-red-400 hover:underline">
+            View →
+          </button>
+        </div>
+      )}
+
       {/* ── ROW 2: VITALS + RECOMMENDATIONS ── */}
       <div className="grid grid-cols-1
         md:grid-cols-2 gap-4">
@@ -403,7 +438,7 @@ export default function DashboardPage() {
               <div className="w-7 h-7 rounded-lg
                 bg-red-100 dark:bg-red-900/30
                 flex items-center justify-center">
-                <Heart size={14}
+                <Activity size={14}
                   className="text-red-500
                     dark:text-red-400" />
               </div>
@@ -430,7 +465,7 @@ export default function DashboardPage() {
                 { icon: Heart, color: 'text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', val: vitals.heartRate ? `${vitals.heartRate}` : '—', unit: 'bpm' },
                 { icon: Activity, color: 'text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20', val: vitals.systolicBP && vitals.diastolicBP ? `${vitals.systolicBP}/${vitals.diastolicBP}` : '—', unit: 'mmHg' },
                 { icon: Droplets, color: 'text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', val: vitals.spO2 ? `${vitals.spO2}%` : '—', unit: 'SpO2' },
-                { icon: Activity, color: 'text-mint-500 dark:text-mint-400', bg: 'bg-mint-50 dark:bg-mint-900/20', val: vitals.steps ? vitals.steps.toLocaleString() : '—', unit: 'steps' },
+                { icon: Footprints, color: 'text-mint-500 dark:text-mint-400', bg: 'bg-mint-50 dark:bg-mint-900/20', val: vitals.steps ? vitals.steps.toLocaleString() : '—', unit: 'steps' },
                 { icon: Zap, color: 'text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', val: vitals.caloriesBurned ? `${vitals.caloriesBurned}` : '—', unit: 'kcal' },
                 { icon: Thermometer, color: 'text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', val: vitals.bodyTemperature ? `${vitals.bodyTemperature}°` : '—', unit: 'temp' },
               ].map((item, i) => {
@@ -784,6 +819,14 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Mood Music Widget */}
+      {todayMood != null && (
+        <MoodMusic
+          mood={todayMood}
+          compact={true}
+        />
+      )}
 
       {/* ── ROW 4: GOALS + SLEEP CHART ── */}
       <div className="grid grid-cols-1

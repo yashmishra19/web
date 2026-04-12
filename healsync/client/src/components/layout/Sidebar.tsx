@@ -8,8 +8,10 @@ import {
   Settings,
   LogOut,
   Heart,
+  Activity,
   MessageCircle,
   MapPin,
+  Pill,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -34,8 +36,9 @@ const navItems: NavItem[] = [
   { label: 'Journal',    icon: BookOpen,        href: '/journal'   },
   { label: 'Breathing',  icon: Wind,            href: '/breathing' },
   { label: 'Analytics',  icon: BarChart2,       href: '/analytics' },
-  { label: 'Vitals',     icon: Heart,           href: '/vitals'    },
-  { label: 'Self-Care',    icon: Heart,     href: '/self-care' },
+  { label: 'Vitals',     icon: Activity,        href: '/vitals'    },
+  { label: 'Medications',icon: Pill,            href: '/medications'},
+  { label: 'Self-Care',  icon: Heart,           href: '/self-care' },
   { label: 'AI Assistant',    icon: MessageCircle, href: '/chat',   badge: 'AI'  },
   { label: 'Nearby Facilities', icon: MapPin,       href: '/nearby', badge: 'New' },
   { label: 'Settings',        icon: Settings,      href: '/settings'             },
@@ -98,6 +101,28 @@ export function SidebarContent({ onLinkClick }: SidebarContentProps) {
 
   const initial = user?.name?.charAt(0)?.toUpperCase() ?? 'U';
 
+  // Calculate missed meds
+  let missedMeds = 0;
+  try {
+    const rawMeds = localStorage.getItem('healsync_medications');
+    const rawLogs = localStorage.getItem('healsync_dose_logs');
+    if (rawMeds && rawLogs) {
+      const meds = JSON.parse(rawMeds);
+      const logs = JSON.parse(rawLogs);
+      const today = new Date().toISOString().split('T')[0];
+      const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+      meds.filter((m: any) => m.active).forEach((med: any) => {
+        med.times.forEach((time: string) => {
+          const [h, m] = time.split(':').map(Number);
+          if (h * 60 + m < nowMin) {
+            const taken = logs.some((l: any) => l.medicationId === med.id && l.date === today && l.scheduledTime === time && l.taken);
+            if (!taken) missedMeds++;
+          }
+        });
+      });
+    }
+  } catch {}
+
   return (
     <>
       {/* 1 — Logo area */}
@@ -133,6 +158,9 @@ export function SidebarContent({ onLinkClick }: SidebarContentProps) {
               <span className="ml-auto text-xs bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded-md font-medium">
                 {item.badge}
               </span>
+            )}
+            {item.href === '/medications' && missedMeds > 0 && (
+              <span className="ml-auto w-2 h-2 rounded-full bg-red-500" />
             )}
           </NavLink>
         ))}

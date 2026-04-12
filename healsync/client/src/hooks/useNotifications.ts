@@ -78,6 +78,38 @@ export function useNotifications() {
         localStorage.setItem(intervalKey, now.getTime().toString())
       }
     }
+
+    // Check medication reminders
+    const rawMeds = localStorage.getItem('healsync_medications')
+    const rawLogs = localStorage.getItem('healsync_dose_logs')
+
+    if (rawMeds) {
+      const meds = JSON.parse(rawMeds)
+      const logs = rawLogs ? JSON.parse(rawLogs) : []
+      const today = now.toISOString().split('T')[0]
+
+      meds
+        .filter((m: any) => m.active)
+        .forEach((med: any) => {
+          med.times.forEach((time: string) => {
+            if (currentTime === time) {
+              const alreadyTaken = logs.some((l: any) =>
+                l.medicationId === med.id &&
+                l.date === today &&
+                l.scheduledTime === time &&
+                l.taken
+              )
+              if (!alreadyTaken) {
+                sendNotification(
+                  `💊 Time for ${med.name}`,
+                  `${med.dose} ${med.unit}` +
+                  (med.withFood ? ' — take with food' : '')
+                )
+              }
+            }
+          })
+        })
+    }
   }, [settings, sendNotification])
 
   useEffect(() => {

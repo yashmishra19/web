@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCheckIn } from '../hooks/useCheckIn';
 import { useStreak } from '../hooks/useStreak';
 import { useToastContext } from '../components/ui';
+import MoodMusic from '../components/MoodMusic';
 import {
   SliderInput,
   MoodPicker,
@@ -123,6 +124,16 @@ export default function CheckInPage() {
             {savedScore} <span className="text-sm text-gray-400">/ 100</span>
           </div>
         </div>
+
+        {/* Mood Music */}
+        {mood != null && (
+          <div className="space-y-2 mb-6 text-left">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Music for your mood
+            </p>
+            <MoodMusic mood={mood} />
+          </div>
+        )}
 
         <Button variant="primary" fullWidth onClick={() => navigate('/dashboard')}>
           Back to dashboard

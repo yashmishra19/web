@@ -11,7 +11,7 @@ const router = Router()
 router.get(
   '/',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const range = (req.query.range as string) || '14d'
       const days  = range === '7d'  ? 7

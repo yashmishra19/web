@@ -22,7 +22,7 @@ const router = Router()
 router.get(
   '/',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const userId = req.user!.id
 

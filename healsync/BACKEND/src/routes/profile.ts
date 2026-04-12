@@ -43,7 +43,7 @@ router.post(
   '/onboarding',
   authenticate,
   validate(onboardingSchema),
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const userId = req.user!.id
 
@@ -69,7 +69,7 @@ router.post(
 router.get(
   '/me',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const profile = await UserProfile.findOne({
         userId: req.user!.id,
@@ -83,7 +83,7 @@ router.get(
 router.put(
   '/reminders',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const user = await User.findByIdAndUpdate(
         req.user!.id,

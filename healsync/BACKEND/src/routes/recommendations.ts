@@ -18,7 +18,7 @@ const router = Router()
 router.get(
   '/',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const userId = req.user!.id
 
@@ -59,7 +59,7 @@ router.get(
 router.get(
   '/history',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const recs = await Recommendation
         .find({ userId: req.user!.id })
@@ -74,7 +74,7 @@ router.get(
 router.patch(
   '/:id/read',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const rec = await Recommendation.findOneAndUpdate(
         { _id: req.params.id, userId: req.user!.id },

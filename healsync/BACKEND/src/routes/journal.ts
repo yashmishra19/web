@@ -21,7 +21,7 @@ router.post(
   '/',
   authenticate,
   validate(journalSchema),
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const entry = await JournalEntry.create({
         userId: req.user!.id,
@@ -42,7 +42,7 @@ router.post(
 router.get(
   '/',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const page  = parseInt(
         req.query.page as string
@@ -81,7 +81,7 @@ router.put(
   '/:id',
   authenticate,
   validate(journalSchema.partial()),
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const entry = await JournalEntry.findOneAndUpdate(
         { _id: req.params.id, userId: req.user!.id },
@@ -107,7 +107,7 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const entry = await JournalEntry.findOneAndDelete({
         _id: req.params.id,

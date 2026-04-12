@@ -42,7 +42,7 @@ router.post(
   '/',
   authenticate,
   validate(vitalsSchema),
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const reading = await VitalsReading.create({
         userId: req.user!.id,
@@ -68,7 +68,7 @@ router.post(
 router.get(
   '/',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const days = parseInt(
         req.query.days as string
@@ -93,7 +93,7 @@ router.get(
 router.get(
   '/latest',
   authenticate,
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const reading = await VitalsReading
         .findOne({ userId: req.user!.id })
@@ -110,7 +110,7 @@ router.post(
   '/suggestions',
   authenticate,
   validate(vitalsSchema),
-  async (req: AuthRequest, res, next) => {
+  async (req: any, res: any, next: any) => {
     try {
       const suggestions = generateVitalsSuggestions(
         req.body

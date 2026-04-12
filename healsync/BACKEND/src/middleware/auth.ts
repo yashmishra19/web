@@ -7,6 +7,7 @@ export interface AuthRequest extends Request {
     email: string
     role: string
   }
+  body: any
 }
 
 interface JWTPayload {

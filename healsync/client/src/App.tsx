@@ -43,6 +43,8 @@ const SelfCarePage    = lazy(() =>
   import('./pages/SelfCarePage'))
 const ChatbotPage     = lazy(() =>
   import('./pages/ChatbotPage'))
+const NearbyFacilitiesPage = lazy(() =>
+  import('./pages/NearbyFacilitiesPage'))
 // Removed non-existent auth pages
 const NotFoundPage    = lazy(() =>
   import('./pages/NotFoundPage'))
@@ -118,6 +120,9 @@ export default function App() {
                       <Route path="/chat"
                         element={
                           <ChatbotPage />} />
+                      <Route path="/nearby"
+                        element={
+                          <NearbyFacilitiesPage />} />
                     </Route>
                   </Route>
 

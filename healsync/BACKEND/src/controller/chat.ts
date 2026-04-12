@@ -4,18 +4,22 @@ import { Chat, UserProfile, User } from '../models'
 import { AuthRequest } from '../middleware/auth'
 
 // Read lazily so dotenv has already run by the time these are called
-const getApiKey = () => process.env.AI_CHATBOT || ''
-const getModel = () => process.env.GEMINI_MODEL || 'gemini-2.5-flash'
+// Read lazily so dotenv has already run by the time these are called
+const getApiKeys = () => {
+  const keys = [process.env.AI_CHATBOT_PRIMARY, process.env.AI_CHATBOT_SECONDARY].filter(Boolean) as string[];
+  // If no primary/secondary, fallback to the legacy single key
+  if (keys.length === 0 && process.env.AI_CHATBOT) keys.push(process.env.AI_CHATBOT);
+  return keys;
+}
+const getModel = () => process.env.GEMINI_MODEL || 'gemini-1.5-flash-8b'
 const getDoctorPhone = () => process.env.EMERGENCY_DOCTOR_PHONE || '+918856853522'
 const getDoctorName = () => process.env.EMERGENCY_DOCTOR_NAME || 'Dr Sharan'
 
 // ─── Gemini — tries multiple models in sequence ───────────────────────────────
 const MODEL_FALLBACKS = [
   'gemini-1.5-flash-8b',
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-2.0-flash-001',
+  'gemini-1.5-flash',
+  'gemini-1.0-pro',
 ]
 
 async function callGeminiWithModel(model: string, contents: any[], systemText: string, apiKey: string): Promise<string> {
@@ -27,7 +31,12 @@ async function callGeminiWithModel(model: string, contents: any[], systemText: s
       parts: [{ text: c.text }],
     })),
     systemInstruction: { parts: [{ text: systemText }] },
-    generationConfig: { temperature: 0.7, maxOutputTokens: 512 },
+    generationConfig: { 
+      temperature: 0.7, 
+      maxOutputTokens: 800, // Balanced for quality and economy
+      topP: 0.95,
+      topK: 40
+    },
   }
 
   const response = await fetch(url, {
@@ -51,36 +60,44 @@ async function callGeminiWithModel(model: string, contents: any[], systemText: s
 }
 
 async function callGemini(contents: any[], systemText: string): Promise<string> {
-  const apiKey = getApiKey()
-  if (!apiKey) throw new Error('AI_CHATBOT key is not configured in .env')
+  const apiKeys = getApiKeys()
+  if (apiKeys.length === 0) throw new Error('No Gemini API keys configured in .env')
 
-  // Try env model first, then fallbacks
-  const modelsToTry = [getModel(), ...MODEL_FALLBACKS.filter(m => m !== getModel())]
+  // Try each API key in sequence if we hit quota or permissions issues
+  for (const apiKey of apiKeys) {
+    // Try current model then fallbacks for THIS API key
+    const modelsToTry = [getModel(), ...MODEL_FALLBACKS.filter(m => m !== getModel())]
 
-  let lastError = ''
-  for (const model of modelsToTry) {
-    try {
-      console.log(`[Gemini] Trying model: ${model}`)
-      const result = await callGeminiWithModel(model, contents, systemText, apiKey)
-      console.log(`[Gemini] ✅ Success with model: ${model}`)
-      return result
-    } catch (err: any) {
-      lastError = err.message
-      if (err.message === 'QUOTA_EXCEEDED') {
-        console.warn(`[Gemini] ⚠️  Quota exceeded for ${model}, trying next...`)
-        continue
+    for (const model of modelsToTry) {
+      try {
+        console.log(`[Gemini] Using Model: ${model} | Key: ${apiKey.substring(0, 8)}...`)
+        const result = await callGeminiWithModel(model, contents, systemText, apiKey)
+        return result
+      } catch (err: any) {
+        if (err.message === 'QUOTA_EXCEEDED') {
+          console.warn(`[Gemini] ⚠️ Quota exceeded for model ${model}. Trying next model...`)
+          continue
+        }
+        if (err.message === 'MODEL_NOT_FOUND') {
+          console.warn(`[Gemini] ⚠️ Model NOT found: ${model}. Trying next...`)
+          continue
+        }
+        if (err.message === 'FORBIDDEN' && apiKeys.length > 1) {
+          console.warn(`[Gemini] ⚠️ Key ${apiKey.substring(0, 8)}... rejected (FORBIDDEN). Trying next API key...`)
+          break // Exit model loop for THIS key, try NEXT key
+        }
+        
+        // If it's a critical quota issue for the whole key, break model loop
+        if (apiKeys.length > 1) {
+          console.warn(`[Gemini] ⚠️ Error with key ${apiKey.substring(0, 8)}...: ${err.message}. Rotating key...`)
+          break 
+        }
+
+        throw err // Final throw if no more keys/retries
       }
-      if (err.message === 'MODEL_NOT_FOUND') {
-        console.warn(`[Gemini] ⚠️  Model not found: ${model}, trying next...`)
-        continue
-      }
-      // Non-quota error — don't retry
-      throw err
     }
   }
 
-  // All models exhausted
-  console.error('[Gemini] ❌ All models quota-exhausted or unavailable')
   throw new Error('QUOTA_ALL_EXHAUSTED')
 }
 
@@ -155,7 +172,7 @@ CURRENT ISSUE (reported in chat):
 // ─── Background: extract & persist key health facts ──────────────────────────
 async function extractKeyPoints(userId: string, newMessage: string) {
   try {
-    const apiKey = getApiKey()
+    const apiKey = getApiKeys()[0]
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${getModel()}:generateContent?key=${apiKey}`
     const prompt = `Analyze the user's statement: "${newMessage}".
 Does it contain new health facts (conditions, allergies, medications, lifestyle)?

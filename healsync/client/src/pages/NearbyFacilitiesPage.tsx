@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
   MapPin, List, Map, Phone, Navigation, Loader2, AlertCircle, 
-  ExternalLink, X, Clock, Globe, Mail, ShieldAlert, Sparkles,
-  Search, Info, Heart, RefreshCw
+  X, Clock, Globe, Mail, ShieldAlert, Sparkles,
+  RefreshCw, Info, Heart
 } from 'lucide-react';
-import { Button, Badge, Card } from '../components/ui';
+import { Badge } from '../components/ui';
 
 interface Facility {
   id: number;
@@ -26,7 +26,7 @@ interface Facility {
 type ViewMode = 'list' | 'map';
 type SortMode = 'best' | 'distance' | 'emergency';
 
-function getNavigationUrl(lat: number, lon: number, name: string) {
+function getNavigationUrl(lat: number, lon: number) {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   if (isIOS) {
     return `maps://maps.apple.com/?q=${lat},${lon}`;
@@ -34,9 +34,7 @@ function getNavigationUrl(lat: number, lon: number, name: string) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
 }
 
-function getGoogleMapsEmbedUrl(lat: number, lon: number, name: string) {
-  return `https://maps.google.com/maps?q=${encodeURIComponent(name)}&ll=${lat},${lon}&z=16&output=embed`;
-}
+
 
 function sortFacilities(list: Facility[], lat: number, lon: number, mode: SortMode): Facility[] {
   const sorted = [...list];
@@ -88,7 +86,6 @@ export default function NearbyFacilitiesPage() {
   const [sortMode, setSortMode] = useState<SortMode>('best');
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
-  const [lastFetchLocation, setLastFetchLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +110,7 @@ export default function NearbyFacilitiesPage() {
         }
       },
       undefined,
-      { enableHighAccuracy: true, distanceFilter: 100 }
+      { enableHighAccuracy: true }
     );
 
     return () => navigator.geolocation.clearWatch(watchId);
@@ -199,7 +196,6 @@ export default function NearbyFacilitiesPage() {
             .filter((f: Facility) => f.lat && f.lon);
 
           lastFetchRef.current = { lat, lon };
-          setLastFetchLocation({ lat, lon });
           setFacilities(sortFacilities(parsed, lat, lon, sortMode));
         } catch {
           // If we already have facilities, don't show the error screen, just keep current data
@@ -414,7 +410,7 @@ export default function NearbyFacilitiesPage() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open(getNavigationUrl(f.lat, f.lon, f.name), '_blank');
+                        window.open(getNavigationUrl(f.lat, f.lon), '_blank');
                       }}
                       className="text-xs bg-mint-500 text-white px-3 py-1 rounded-lg hover:bg-mint-600 transition-colors flex items-center gap-1"
                     >
@@ -462,7 +458,7 @@ export default function NearbyFacilitiesPage() {
                       {selectedFacility.type}
                     </Badge>
                     {selectedFacility.emergency && (
-                      <Badge color="red" variant="solid" className="flex items-center gap-1">
+                      <Badge color="red" className="flex items-center gap-1">
                         <ShieldAlert size={10} /> 24/7 EMERGENCY
                       </Badge>
                     )}
@@ -596,7 +592,7 @@ export default function NearbyFacilitiesPage() {
                 <Map size={18} /> Focus on Map
               </button>
               <a
-                href={getNavigationUrl(selectedFacility.lat, selectedFacility.lon, selectedFacility.name)}
+                href={getNavigationUrl(selectedFacility.lat, selectedFacility.lon)}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-mint-500 text-white py-3 flex items-center justify-center gap-2 text-sm font-semibold rounded-2xl hover:bg-mint-600 transition-all shadow-lg shadow-mint-500/20 active:scale-95"
